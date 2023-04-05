@@ -1,3 +1,6 @@
+﻿using ConciergeBackend.Controllers;
+using ConciergeBackend.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
