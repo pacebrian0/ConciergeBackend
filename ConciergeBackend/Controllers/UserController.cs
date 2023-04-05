@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.DynamoDBv2.DataModel;
+using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,11 +10,21 @@ namespace ConciergeBackend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IDynamoDBContext _dynamoDBContext;
+        private readonly ILogger<UserController> _logger;
+
+        public UserController(IDynamoDBContext dynamoDBContext, ILogger<UserController> logger)
+        {
+            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         // GET: api/<UserController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<User>> GetAsync()
         {
-            return new string[] { "value1", "value2" };
+            var Users = await _dynamoDBContext.ScanAsync<User>(new List<ScanCondition>()).GetRemainingAsync();
+            return Users;
         }
 
         // GET api/<UserController>/5

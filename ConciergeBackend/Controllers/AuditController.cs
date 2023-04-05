@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.DynamoDBv2.DataModel;
+using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,73 @@ namespace ConciergeBackend.Controllers
     [ApiController]
     public class AuditController : ControllerBase
     {
-        // GET: api/<AuditController>
+        private readonly IDynamoDBContext _dynamoDBContext;
+        private readonly ILogger<AuditController> _logger;
+
+        public AuditController(IDynamoDBContext dynamoDBContext, ILogger<AuditController> logger)
+        {
+            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<Audit>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var Audits = await _dynamoDBContext.ScanAsync<Audit>(new List<ScanCondition>()).GetRemainingAsync();
+            return Audits;
         }
 
-        // GET api/<AuditController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<Audit> Get(string id)
         {
-            return "value";
+            var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
+            if (Audit == null)
+            {
+                throw new ArgumentException($"Audit with ID '{id}' not found");
+            }
+            return Audit;
         }
 
-        // POST api/<AuditController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<Audit> Create(Audit Audit)
         {
+            if (Audit == null)
+            {
+                throw new ArgumentNullException(nameof(Audit));
+            }
+            await _dynamoDBContext.SaveAsync(Audit);
+            return Audit;
         }
 
-        // PUT api/<AuditController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<Audit> Update(string id, Audit Audit)
         {
+            if (Audit == null)
+            {
+                throw new ArgumentNullException(nameof(Audit));
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (Audit.id != id)
+            {
+                throw new ArgumentException($"The ID of the Audit in the body '{Audit.id}' does not match the ID '{id}' in the URL");
+            }
+            await _dynamoDBContext.SaveAsync(Audit);
+            return Audit;
         }
 
-        // DELETE api/<AuditController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
+            if (Audit == null)
+            {
+                throw new ArgumentException($"Audit with ID '{id}' not found");
+            }
+            await _dynamoDBContext.DeleteAsync(Audit);
+            return NoContent();
         }
     }
 }
