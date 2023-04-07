@@ -16,45 +16,4 @@ namespace ConciergeBackend.Models
     }
 
 
-public static class AuditEndpoints
-{
-	public static void MapAuditEndpoints (this IEndpointRouteBuilder routes)
-    {
-        var group = routes.MapGroup("/api/Audit").WithTags(nameof(Audit));
-
-        group.MapGet("/", () =>
-        {
-            return new [] { new Audit() };
-        })
-        .WithName("GetAllAudits")
-        .WithOpenApi();
-
-        group.MapGet("/{id}", (int id) =>
-        {
-            //return new Audit { ID = id };
-        })
-        .WithName("GetAuditById")
-        .WithOpenApi();
-
-        group.MapPut("/{id}", (int id, Audit input) =>
-        {
-            return TypedResults.NoContent();
-        })
-        .WithName("UpdateAudit")
-        .WithOpenApi();
-
-        group.MapPost("/", (Audit model) =>
-        {
-            //return TypedResults.Created($"/Audits/{model.ID}", model);
-        })
-        .WithName("CreateAudit")
-        .WithOpenApi();
-
-        group.MapDelete("/{id}", (int id) =>
-        {
-            //return TypedResults.Ok(new Audit { ID = id });
-        })
-        .WithName("DeleteAudit")
-        .WithOpenApi();
-    }
-}}
+}
