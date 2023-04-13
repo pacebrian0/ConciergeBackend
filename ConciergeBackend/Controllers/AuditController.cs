@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
+using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,74 +9,76 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuditController : ControllerBase
+    public class AuditController : ControllerBase, IAuditController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
+        //private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<AuditController> _logger;
+        private readonly IAuditLogic _logic;
 
-        public AuditController(IDynamoDBContext dynamoDBContext, ILogger<AuditController> logger)
+
+        public AuditController(/*IDynamoDBContext dynamoDBContext,*/ ILogger<AuditController> logger, IAuditLogic logic)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
+            //_dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Audit>> Get()
+        public async Task<IEnumerable<Audit>> GetAudits()
         {
-            var Audits = await _dynamoDBContext.ScanAsync<Audit>(new List<ScanCondition>()).GetRemainingAsync();
-            return Audits;
+            //var Audits = await _dynamoDBContext.ScanAsync<Audit>(new List<ScanCondition>()).GetRemainingAsync();
+            var audits = await _logic.GetAudits();
+            return audits;
         }
 
         [HttpGet("{id}")]
-        public async Task<Audit> Get(string id)
+        public async Task<Audit> GetAuditsById(int id)
         {
-            var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
-            if (Audit == null)
+            //var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
+            if (id == null)
             {
                 throw new ArgumentException($"Audit with ID '{id}' not found");
             }
-            return Audit;
+            return new Audit();
         }
 
         [HttpPost]
-        public async Task<Audit> Create(Audit Audit)
+        public async Task<string> CreateAudit(Audit audit)
         {
-            if (Audit == null)
+            if (audit == null)
             {
-                throw new ArgumentNullException(nameof(Audit));
+                throw new ArgumentNullException(nameof(audit));
             }
-            await _dynamoDBContext.SaveAsync(Audit);
-            return Audit;
+            var id = await _logic.PostAudit(audit);
+            //await _dynamoDBContext.SaveAsync(Audit);
+            return id;
         }
 
         [HttpPut("{id}")]
-        public async Task<Audit> Update(string id, Audit Audit)
+        public async Task<Audit> UpdateAudit(int id, Audit Audit)
         {
             if (Audit == null)
             {
                 throw new ArgumentNullException(nameof(Audit));
             }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+
             if (Audit.id != id)
             {
                 throw new ArgumentException($"The ID of the Audit in the body '{Audit.id}' does not match the ID '{id}' in the URL");
             }
-            await _dynamoDBContext.SaveAsync(Audit);
+            //await _dynamoDBContext.SaveAsync(Audit);
             return Audit;
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteAudit(int id)
         {
-            var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
-            if (Audit == null)
+            //var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
+            if (id == null)
             {
                 throw new ArgumentException($"Audit with ID '{id}' not found");
             }
-            await _dynamoDBContext.DeleteAsync(Audit);
+            //await _dynamoDBContext.DeleteAsync(Audit);
             return NoContent();
         }
     }

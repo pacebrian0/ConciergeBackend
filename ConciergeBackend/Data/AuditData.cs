@@ -1,16 +1,15 @@
-﻿using ConciergeBackend.Models;
+﻿using ConciergeBackend.Data.Interfaces;
+using ConciergeBackend.Models;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 
 namespace ConciergeBackend.Data
 {
-    public class AuditData
+    public class AuditData : BaseDatabase,IAuditData
     {
-        private readonly MySqlConnection _connection;
-
-        public AuditData(MySqlConnection connection)
+        public AuditData(IConfiguration configuration) : base(configuration)
         {
-            _connection = connection;
         }
 
         public async Task<IEnumerable<Audit>> GetAudits()
@@ -20,7 +19,7 @@ namespace ConciergeBackend.Data
                 const string sql = @"SELECT *
                                     FROM conciergedb.AUDIT
                                     ";
-                using (var conn = _connection)
+                using (var conn = new MySqlConnection(_localConn) )
                 {
                     return await conn.QueryAsync<Audit>(sql);
                 }
@@ -35,18 +34,43 @@ namespace ConciergeBackend.Data
 
         public async Task<string> PostAudit(Audit audit)
         {
+            var id = "";
             try
             {
-                const string sql = @"INSERT INTO conciergedb.AUDIT 
-                                        (awsID, userID, timestamp, table_name, field_name, action, old_value, new_value, comments)
-                                    VALUES
-                                        (:AWSID, :USERID, :TIMESTAMP, :TABLENAME, :FIELDNAME, :ACTION, :OLDVALUE, :NEWVALUE, :COMMENTS);
-                                    
-                                    SELECT LAST_INSERT_ID();";
-                using (var conn = _connection)
+                const string sql = @"
+                            INSERT INTO `conciergedb`.`Audit`
+                            (
+                            `userID`,
+                            `timestamp`,
+                            `table_name`,
+                            `field_name`,
+                            `action`,
+                            `old_value`,
+                            `new_value`,
+                            `comments`)
+                            VALUES
+                            (
+                            :USERID,
+                            current_timestamp(),
+                            :TABLENAME,
+                            :FIELDNAME, 
+                            :ACTION, 
+                            :OLDVALUE, 
+                            :NEWVALUE, 
+                            :COMMENTS);";
+               using (var conn = new MySqlConnection(_localConn) )
                 {
-                    return await conn.ExecuteScalarAsync<string>(sql);
+                    await conn.ExecuteAsync(sql, new {USERID= audit.userID, TIMESTAMP= audit.timestamp, TABLENAME=audit.table, FIELDNAME=audit.field, OLDVALUE=audit.oldvalue, NEWVALUE=audit.newvalue, COMMENTS=audit.comments});
                 }
+               
+               /*
+                using (var conn = new MySqlConnection(_remoteConn))
+                {
+                    id= await conn.ExecuteScalarAsync<string>(sql, new { USERID = audit.userID, TABLENAME = audit.table, FIELDNAME = audit.field, OLDVALUE = audit.oldvalue, NEWVALUE = audit.newvalue, COMMENTS = audit.comments });
+                }
+               */
+
+                return "1";
             }
             catch (Exception e)
             {
@@ -54,6 +78,61 @@ namespace ConciergeBackend.Data
                 throw;
             }
 
+        }
+
+        public async Task<Audit> GetAuditById(string id)
+        {
+            try
+            {
+                const string sql = @"SELECT * FROM conciergedb.AUDIT 
+                                     WHERE id = :ID";
+                using (var conn = new MySqlConnection(_localConn) )
+                {
+                    return await conn.QueryFirstAsync<Audit>(sql, new { ID = id });
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Audit> UpdateAudit(string id, Audit audit)
+        {
+            try
+            {
+                const string sql = @"SELECT * FROM conciergedb.AUDIT 
+                                     WHERE id = :ID";
+                using (var conn = new MySqlConnection(_localConn) )
+                {
+                    return await conn.QueryFirstAsync<Audit>(sql, new { ID = id });
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task DeleteAudit(string id)
+        {
+            try
+            {
+                const string sql = @"SELECT * FROM conciergedb.AUDIT 
+                                     WHERE id = :ID";
+                using (var conn = new MySqlConnection(_localConn) )
+                {
+                     await conn.QueryFirstAsync<Audit>(sql, new { ID = id });
+                    
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
     }
 }

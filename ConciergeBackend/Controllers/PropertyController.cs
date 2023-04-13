@@ -1,4 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,47 +8,45 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PropertyController : ControllerBase
+    public class PropertyController : ControllerBase, IPropertyController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<PropertyController> _logger;
 
-        public PropertyController(IDynamoDBContext dynamoDBContext, ILogger<PropertyController> logger)
+        public PropertyController(ILogger<PropertyController> logger)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: api/<PropertyController>
         [HttpGet]
-        public async Task<IEnumerable<Property>> GetAsync()
+        public async Task<IEnumerable<Property>> GetPropertyAsync()
         {
-            var Propertys = await _dynamoDBContext.ScanAsync<Property>(new List<ScanCondition>()).GetRemainingAsync();
+            var Propertys = new List<Property>();
             return Propertys;
         }
 
         // GET api/<PropertyController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string GetPropertyById(int id)
         {
             return "value";
         }
 
         // POST api/<PropertyController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void PostProperty([FromBody] Property property)
         {
         }
 
         // PUT api/<PropertyController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void PutProperty(int id, [FromBody] Property property)
         {
         }
 
         // DELETE api/<PropertyController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void DeleteProperty(int id)
         {
         }
     }

@@ -1,6 +1,8 @@
-﻿using Amazon;
-using Amazon.DynamoDBv2;
-using ConciergeBackend.Controllers;
+﻿using ConciergeBackend.Controllers;
+using ConciergeBackend.Data;
+using ConciergeBackend.Data.Interfaces;
+using ConciergeBackend.Logic;
+using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using MySqlConnector;
 
@@ -13,13 +15,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-AmazonDynamoDBConfig clientConfig = new()
-{
-    RegionEndpoint = RegionEndpoint.EUCentral1
-};
-builder.Services.AddSingleton(new AmazonDynamoDBClient(clientConfig));
-builder.Services.AddTransient(x =>
-  new MySqlConnection(builder.Configuration.GetConnectionString("MariaDbConnectionString")));
+builder.Services.AddScoped<IAuditLogic, AuditLogic>();
+builder.Services.AddScoped<IAuditData, AuditData>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

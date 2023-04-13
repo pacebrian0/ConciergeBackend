@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConciergeBackend", "ConciergeBackend\ConciergeBackend.csproj", "{7559064B-CCC8-4130-A420-CFB80FE596D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConciergeBackend", "ConciergeBackend\ConciergeBackend.csproj", "{7559064B-CCC8-4130-A420-CFB80FE596D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConciergeHelper", "ConciergeHelper\ConciergeHelper.csproj", "{DF74891A-F2C9-4149-B119-0FBF5E5741A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attendant", "Attendant\Attendant.csproj", "{75D79D44-EE12-4EBD-9706-48D8C48A9889}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{7559064B-CCC8-4130-A420-CFB80FE596D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7559064B-CCC8-4130-A420-CFB80FE596D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7559064B-CCC8-4130-A420-CFB80FE596D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF74891A-F2C9-4149-B119-0FBF5E5741A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF74891A-F2C9-4149-B119-0FBF5E5741A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF74891A-F2C9-4149-B119-0FBF5E5741A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF74891A-F2C9-4149-B119-0FBF5E5741A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D79D44-EE12-4EBD-9706-48D8C48A9889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D79D44-EE12-4EBD-9706-48D8C48A9889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D79D44-EE12-4EBD-9706-48D8C48A9889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D79D44-EE12-4EBD-9706-48D8C48A9889}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

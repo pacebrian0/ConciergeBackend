@@ -1,4 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,47 +8,45 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase, IUserController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IDynamoDBContext dynamoDBContext, ILogger<UserController> logger)
+        public UserController(ILogger<UserController> logger)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: api/<UserController>
         [HttpGet]
-        public async Task<IEnumerable<User>> GetAsync()
+        public async Task<IEnumerable<User>> GetUserAsync()
         {
-            var Users = await _dynamoDBContext.ScanAsync<User>(new List<ScanCondition>()).GetRemainingAsync();
+            var Users = new List<User>();
             return Users;
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string GetUserById(int id)
         {
             return "value";
         }
 
         // POST api/<UserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void PostUser([FromBody] User user)
         {
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void PutUser(int id, [FromBody] User user)
         {
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void DeleteUser(int id)
         {
         }
     }

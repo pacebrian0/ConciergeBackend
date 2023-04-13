@@ -1,11 +1,10 @@
 ﻿using ConciergeBackend.Models;
 
-namespace ConciergeBackend.Data.Interfaces
+namespace ConciergeBackend.Data
 {
-    public interface IAuditLogic
+    public interface IAuditData
     {
-        public Task<IEnumerable<Audit>> GetAudits();
-        public Task<string> PostAudit(Audit audit);
-
+        Task<IEnumerable<Audit>> GetAudits();
+        Task<string> PostAudit(Audit audit);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,28 +8,27 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HistoryController : ControllerBase
+    public class HistoryController : ControllerBase, IHistoryController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<HistoryController> _logger;
 
-        public HistoryController(IDynamoDBContext dynamoDBContext, ILogger<HistoryController> logger)
+        public HistoryController( ILogger<HistoryController> logger)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
+            
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
-        public async Task<IEnumerable<History>> Get()
+        public async Task<IEnumerable<History>> GetHistory()
         {
-            var Historys = await _dynamoDBContext.ScanAsync<History>(new List<ScanCondition>()).GetRemainingAsync();
+            var Historys = new List<History>();
             return Historys;
         }
 
         [HttpGet("{id}")]
-        public async Task<History> Get(string id)
+        public async Task<History> GetHistoryById(string id)
         {
-            var History = await _dynamoDBContext.LoadAsync<History>(id);
+            var History = new History();
             if (History == null)
             {
                 throw new ArgumentException($"History with ID '{id}' not found");
@@ -38,18 +37,18 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<History> Create(History History)
+        public async Task<History> CreateHistory(History History)
         {
             if (History == null)
             {
                 throw new ArgumentNullException(nameof(History));
             }
-            await _dynamoDBContext.SaveAsync(History);
+            //await _dynamoDBContext.SaveAsync(History);
             return History;
         }
 
         [HttpPut("{id}")]
-        public async Task<History> Update(string id, History History)
+        public async Task<History> UpdateHistory(string id, History History)
         {
             if (History == null)
             {
@@ -63,19 +62,20 @@ namespace ConciergeBackend.Controllers
             {
                 throw new ArgumentException($"The ID of the History in the body '{History.id}' does not match the ID '{id}' in the URL");
             }
-            await _dynamoDBContext.SaveAsync(History);
+            //await _dynamoDBContext.SaveAsync(History);
             return History;
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteHistory(string id)
         {
-            var History = await _dynamoDBContext.LoadAsync<History>(id);
+            //var History = await _dynamoDBContext.LoadAsync<History>(id);
+            var History = new History();
             if (History == null)
             {
                 throw new ArgumentException($"History with ID '{id}' not found");
             }
-            await _dynamoDBContext.DeleteAsync(History);
+            //await _dynamoDBContext.DeleteAsync(History);
             return NoContent();
         }
     }

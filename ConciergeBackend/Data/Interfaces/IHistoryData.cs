@@ -1,6 +1,10 @@
-﻿namespace ConciergeBackend.Data.Interfaces
+﻿using ConciergeBackend.Models;
+
+namespace ConciergeBackend.Data.Interfaces
 {
-    public interface IHistoryLogic
+    public interface IHistoryData
     {
+        Task<IEnumerable<History>> GetHistories();
+        Task<string> PostHistory(History history);
     }
 }

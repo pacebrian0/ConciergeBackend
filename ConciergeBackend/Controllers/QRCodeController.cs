@@ -12,7 +12,7 @@ namespace ConciergeBackend.Controllers
     {
         // GET: api/<QRCodeController>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetQR()
         {
             var qr = QrCode.EncodeText("Hello, world!", QrCode.Ecc.Medium);
             string svg = qr.ToSvgString(4);

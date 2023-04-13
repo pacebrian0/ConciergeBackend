@@ -1,4 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,47 +8,45 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StaffUserController : ControllerBase
+    public class StaffUserController : ControllerBase, IStaffUserController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<StaffUserController> _logger;
 
-        public StaffUserController(IDynamoDBContext dynamoDBContext, ILogger<StaffUserController> logger)
+        public StaffUserController(ILogger<StaffUserController> logger)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: api/<StaffUserController>
         [HttpGet]
-        public async Task<IEnumerable<StaffUser>> GetAsync()
+        public async Task<IEnumerable<StaffUser>> GetStaffUserAsync()
         {
-            var StaffUsers = await _dynamoDBContext.ScanAsync<StaffUser>(new List<ScanCondition>()).GetRemainingAsync();
+            var StaffUsers = new List<StaffUser>();
             return StaffUsers;
         }
 
         // GET api/<StaffUserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string GetStaffUserById(int id)
         {
             return "value";
         }
 
         // POST api/<StaffUserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void PostStaffUser([FromBody] StaffUser staffUser)
         {
         }
 
         // PUT api/<StaffUserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void PutStaffUser(int id, [FromBody] StaffUser staffUser)
         {
         }
 
         // DELETE api/<StaffUserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void DeleteStaffUser(int id)
         {
         }
     }

@@ -1,4 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,47 +8,45 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomController : ControllerBase
+    public class RoomController : ControllerBase, IRoomController
     {
-        private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<RoomController> _logger;
 
-        public RoomController(IDynamoDBContext dynamoDBContext, ILogger<RoomController> logger)
+        public RoomController(ILogger<RoomController> logger)
         {
-            _dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: api/<RoomController>
         [HttpGet]
-        public async Task<IEnumerable<Room>> GetAsync()
+        public async Task<IEnumerable<Room>> GetRoomAsync()
         {
-            var Rooms = await _dynamoDBContext.ScanAsync<Room>(new List<ScanCondition>()).GetRemainingAsync();
+            var Rooms = new List<Room>();
             return Rooms;
         }
 
         // GET api/<RoomController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string GetRoomById(int id)
         {
             return "value";
         }
 
         // POST api/<RoomController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void PostRoom([FromBody] Room room)
         {
         }
 
         // PUT api/<RoomController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void PutRoom(int id, [FromBody] Room room)
         {
         }
 
         // DELETE api/<RoomController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void DeleteRoom(int id)
         {
         }
     }
