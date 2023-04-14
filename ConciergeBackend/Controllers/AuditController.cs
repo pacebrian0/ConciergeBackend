@@ -43,32 +43,17 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<string> CreateAudit(Audit audit)
+        public async Task CreateAudit(Audit audit)
         {
             if (audit == null)
             {
                 throw new ArgumentNullException(nameof(audit));
             }
-            var id = await _logic.PostAudit(audit);
+            await _logic.PostAudit(audit);
             //await _dynamoDBContext.SaveAsync(Audit);
-            return id;
+            
         }
 
-        [HttpPut("{id}")]
-        public async Task<Audit> UpdateAudit(int id, Audit Audit)
-        {
-            if (Audit == null)
-            {
-                throw new ArgumentNullException(nameof(Audit));
-            }
-
-            if (Audit.id != id)
-            {
-                throw new ArgumentException($"The ID of the Audit in the body '{Audit.id}' does not match the ID '{id}' in the URL");
-            }
-            //await _dynamoDBContext.SaveAsync(Audit);
-            return Audit;
-        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAudit(int id)

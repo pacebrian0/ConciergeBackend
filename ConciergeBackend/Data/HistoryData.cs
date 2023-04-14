@@ -5,13 +5,12 @@ using MySqlConnector;
 
 namespace ConciergeBackend.Data
 {
-    public class HistoryData : IHistoryData
+    public class HistoryData : BaseDatabase, IHistoryData
     {
-        private readonly MySqlConnection _connection;
 
-        public HistoryData(MySqlConnection connection)
+
+        public HistoryData(IConfiguration configuration) : base(configuration)
         {
-            _connection = connection;
         }
 
         public async Task<IEnumerable<History>> GetHistories()
@@ -21,9 +20,31 @@ namespace ConciergeBackend.Data
                 const string sql = @"SELECT *
                                     FROM conciergedb.HISTORY
                                     ";
-                using (var conn = _connection)
+                using (var conn = new MySqlConnection(_localConn))
                 {
                     return await conn.QueryAsync<History>(sql);
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+        public async Task<History> GetHistoryById(string id)
+        {
+            try
+            {
+                const string sql = @"SELECT *
+                                    FROM conciergedb.HISTORY
+                                    WHERE id=:id
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryFirstOrDefaultAsync<History>(sql, new { id });
+
                 }
             }
             catch (Exception e)
@@ -34,20 +55,54 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<string> PostHistory(History history)
+        public async Task PostHistory(History history, bool local)
         {
             try
             {
-                const string sql = @"INSERT INTO conciergedb.AUDIT 
-                                        (awsID, userID, timestamp, table_name, field_name, action, old_value, new_value, comments)
-                                    VALUES
-                                        (:AWSID, :USERID, :TIMESTAMP, :TABLENAME, :FIELDNAME, :ACTION, :OLDVALUE, :NEWVALUE, :COMMENTS);
-                                    
-                                    SELECT LAST_INSERT_ID();";
-                using (var conn = _connection)
+                const string sql = @"
+                            INSERT INTO `conciergedb`.`History`
+                            (
+                            `roomID`,
+                            `reservationID`,
+                            `userID`,
+                            `timestamp`)
+                            VALUES
+                            (
+                            :roomID,
+                            :reservationID,
+                            :userID,
+                            now()
+                            )";
+
+                using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    return await conn.ExecuteScalarAsync<string>(sql);
+                    await conn.ExecuteAsync(sql, new { history.room, history.reservation, history.userID });
                 }
+
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+
+
+
+        public async Task DeleteHistory(History history, bool local)
+        {
+            try
+            {
+                const string sql = @"
+                            DELETE FROM `conciergedb`.`HISTORY`
+                            WHERE id = :id";
+                using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
+                {
+                    await conn.ExecuteAsync(sql, new { history.id });
+                }
+
             }
             catch (Exception e)
             {

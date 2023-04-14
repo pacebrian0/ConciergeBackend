@@ -1,4 +1,4 @@
-﻿using ConciergeBackend.Data;
+﻿using ConciergeBackend.Data.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using Serilog;
@@ -21,12 +21,12 @@ namespace ConciergeBackend.Logic
 
         }
 
-        public async Task<string> PostAudit(Audit audit)
+        public async Task PostAudit(Audit audit)
         {
             //do AWS logic
 
             //do local logic
-            return await _data.PostAudit(audit);
+            await _data.PostAudit(audit, true);
 
         }
     }
