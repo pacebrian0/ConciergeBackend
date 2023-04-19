@@ -38,7 +38,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"SELECT *
                                     FROM conciergedb.STAFFUSER
-                                    WHERE id=:id
+                                    WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -72,14 +72,14 @@ namespace ConciergeBackend.Data
                             `status`)
                             VALUES
                             (
-                            :name,
-                            :surname ,
-                            :property,
-                            :email ,
+                            @name,
+                            @surname ,
+                            @property,
+                            @email ,
                             now(),
-                            :createdBy ,
+                            @createdBy ,
                             now(),
-                            :modifiedBy ,
+                            @modifiedBy ,
                             'A' );
 
                             ";
@@ -107,14 +107,14 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             UPDATE `conciergedb`.`STAFFUSER`
-                            SET `name` = :name,
-                                `surname` = :surname,
-                                `propertyID` = :property,
-                                `email` = :email,
+                            SET `name` = @name,
+                                `surname` = @surname,
+                                `propertyID` = @property,
+                                `email` = @email,
                                 `modifiedOn` = now(),
-                                `modifiedBy` = :modifiedBy,
-                                `status` = :status
-                            WHERE id = :id";
+                                `modifiedBy` = @modifiedBy,
+                                `status` = @status
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { staffuser.name, staffuser.surname, staffuser.property, staffuser.email, staffuser.modifiedBy, staffuser.status, staffuser.id });
@@ -136,7 +136,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             DELETE FROM `conciergedb`.`STAFFUSER`
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { staffuser.id });

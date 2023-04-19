@@ -5,10 +5,10 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IUserController
     {
-        void DeleteUser(int id);
-        Task<IEnumerable<User>> GetUserAsync();
-        string GetUserById(int id);
-        void PostUser([FromBody] User user);
-        void PutUser(int id, [FromBody] User user);
+        Task<User> CreateUser(User history);
+        Task<IActionResult> DeleteUser(string id);
+        Task<IEnumerable<User>> GetUser();
+        Task<User> GetUserById(string id);
+        Task<User> UpdateUser(string id, User User);
     }
 }

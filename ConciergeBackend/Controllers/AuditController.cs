@@ -11,14 +11,12 @@ namespace ConciergeBackend.Controllers
     [ApiController]
     public class AuditController : ControllerBase, IAuditController
     {
-        //private readonly IDynamoDBContext _dynamoDBContext;
         private readonly ILogger<AuditController> _logger;
         private readonly IAuditLogic _logic;
 
 
-        public AuditController(/*IDynamoDBContext dynamoDBContext,*/ ILogger<AuditController> logger, IAuditLogic logic)
+        public AuditController(ILogger<AuditController> logger, IAuditLogic logic)
         {
-            //_dynamoDBContext = dynamoDBContext ?? throw new ArgumentNullException(nameof(dynamoDBContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
@@ -26,7 +24,6 @@ namespace ConciergeBackend.Controllers
         [HttpGet]
         public async Task<IEnumerable<Audit>> GetAudits()
         {
-            //var Audits = await _dynamoDBContext.ScanAsync<Audit>(new List<ScanCondition>()).GetRemainingAsync();
             var audits = await _logic.GetAudits();
             return audits;
         }
@@ -34,7 +31,6 @@ namespace ConciergeBackend.Controllers
         [HttpGet("{id}")]
         public async Task<Audit> GetAuditsById(int id)
         {
-            //var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
             if (id == null)
             {
                 throw new ArgumentException($"Audit with ID '{id}' not found");
@@ -51,7 +47,7 @@ namespace ConciergeBackend.Controllers
             }
             await _logic.PostAudit(audit);
             //await _dynamoDBContext.SaveAsync(Audit);
-            
+
         }
 
 

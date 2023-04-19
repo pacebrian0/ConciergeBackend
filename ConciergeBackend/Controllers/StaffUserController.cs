@@ -1,4 +1,5 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
+using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,43 +12,80 @@ namespace ConciergeBackend.Controllers
     public class StaffUserController : ControllerBase, IStaffUserController
     {
         private readonly ILogger<StaffUserController> _logger;
+        private readonly IStaffUserLogic _logic;
 
-        public StaffUserController(ILogger<StaffUserController> logger)
+
+        public StaffUserController(ILogger<StaffUserController> logger, IStaffUserLogic logic)
         {
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
 
-        // GET: api/<StaffUserController>
         [HttpGet]
-        public async Task<IEnumerable<StaffUser>> GetStaffUserAsync()
+        public async Task<IEnumerable<StaffUser>> GetStaffUser()
         {
-            var StaffUsers = new List<StaffUser>();
+            var StaffUsers = await _logic.GetStaffUsers();
             return StaffUsers;
         }
 
-        // GET api/<StaffUserController>/5
         [HttpGet("{id}")]
-        public string GetStaffUserById(int id)
+        public async Task<StaffUser> GetStaffUserById(string id)
         {
-            return "value";
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
+            var history = await _logic.GetStaffUserById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"StaffUser with ID '{id}' not found");
+            }
+            return history;
         }
 
-        // POST api/<StaffUserController>
         [HttpPost]
-        public void PostStaffUser([FromBody] StaffUser staffUser)
+        public async Task<StaffUser> CreateStaffUser(StaffUser history)
         {
+            if (history == null)
+            {
+                throw new ArgumentNullException(nameof(history));
+            }
+            await _logic.PostStaffUser(history);
+            return history;
         }
 
-        // PUT api/<StaffUserController>/5
+
         [HttpPut("{id}")]
-        public void PutStaffUser(int id, [FromBody] StaffUser staffUser)
+        public async Task<StaffUser> UpdateStaffUser(string id, StaffUser StaffUser)
         {
+            if (StaffUser == null)
+            {
+                throw new ArgumentNullException(nameof(StaffUser));
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (StaffUser.id != id)
+            {
+                throw new ArgumentException($"The ID of the StaffUser in the body '{StaffUser.id}' does not match the ID '{id}' in the URL");
+            }
+            await _logic.UpdateStaffUser(StaffUser);
+            return StaffUser;
         }
 
-        // DELETE api/<StaffUserController>/5
+
         [HttpDelete("{id}")]
-        public void DeleteStaffUser(int id)
+        public async Task<IActionResult> DeleteStaffUser(string id)
         {
+            //var StaffUser = await _dynamoDBContext.LoadAsync<StaffUser>(id);
+            var history = await _logic.GetStaffUserById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"StaffUser with ID '{id}' not found");
+            }
+            await _logic.DeleteStaffUser(history);
+            return Ok();
         }
     }
 }

@@ -4,10 +4,10 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IHostController
     {
-        void DeleteHost(int id);
-        Task<IEnumerable<Models.Host>> GetHostAsync();
-        string GetHostById(int id);
-        void PostHost([FromBody] Models.Host host);
-        void PutHost(int id, [FromBody] Models.Host host);
+        Task<Models.Host> CreateHost(Models.Host history);
+        Task<IActionResult> DeleteHost(string id);
+        Task<IEnumerable<Models.Host>> GetHost();
+        Task<Models.Host> GetHostById(string id);
+        Task<Models.Host> UpdateHost(string id, Models.Host Host);
     }
 }

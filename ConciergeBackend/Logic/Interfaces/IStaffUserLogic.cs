@@ -1,6 +1,13 @@
-﻿namespace ConciergeBackend.Data.Interfaces
+﻿using ConciergeBackend.Models;
+
+namespace ConciergeBackend.Logic.Interfaces
 {
     public interface IStaffUserLogic
     {
+        Task DeleteStaffUser(StaffUser audit);
+        Task<StaffUser> GetStaffUserById(string id);
+        Task<IEnumerable<StaffUser>> GetStaffUsers();
+        Task PostStaffUser(StaffUser audit);
+        Task UpdateStaffUser(StaffUser audit);
     }
 }

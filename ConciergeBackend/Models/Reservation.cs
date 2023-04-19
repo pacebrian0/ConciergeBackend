@@ -7,6 +7,7 @@
         public string userID { get; set; }
         public bool expiresYN { get; set; }
         public string expiryDate { get; set; }
+        public string reservationCode { get; set; }
         public string createdOn { get; set; }
         public string createdBy { get; set; }
         public string modifiedOn { get; set; }

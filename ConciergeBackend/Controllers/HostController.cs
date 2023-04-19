@@ -1,4 +1,6 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
+using ConciergeBackend.Logic.Interfaces;
+using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Host = ConciergeBackend.Models.Host;
 
@@ -11,43 +13,80 @@ namespace ConciergeBackend.Controllers
     public class HostController : ControllerBase, IHostController
     {
         private readonly ILogger<HostController> _logger;
+        private readonly IHostLogic _logic;
 
-        public HostController(ILogger<HostController> logger)
+
+        public HostController(ILogger<HostController> logger, IHostLogic logic)
         {
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
 
-        // GET: api/<HostController>
         [HttpGet]
-        public async Task<IEnumerable<Host>> GetHostAsync()
+        public async Task<IEnumerable<Host>> GetHost()
         {
-            var hosts = new List<Host>();
-            return hosts;
+            var Hosts = await _logic.GetHosts();
+            return Hosts;
         }
 
-        // GET api/<HostController>/5
         [HttpGet("{id}")]
-        public string GetHostById(int id)
+        public async Task<Host> GetHostById(string id)
         {
-            return "value";
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
+            var history = await _logic.GetHostById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"Host with ID '{id}' not found");
+            }
+            return history;
         }
 
-        // POST api/<HostController>
         [HttpPost]
-        public void PostHost([FromBody] Host host)
+        public async Task<Host> CreateHost(Host history)
         {
+            if (history == null)
+            {
+                throw new ArgumentNullException(nameof(history));
+            }
+            await _logic.PostHost(history);
+            return history;
         }
 
-        // PUT api/<HostController>/5
+
         [HttpPut("{id}")]
-        public void PutHost(int id, [FromBody] Host host)
+        public async Task<Host> UpdateHost(string id, Host Host)
         {
+            if (Host == null)
+            {
+                throw new ArgumentNullException(nameof(Host));
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (Host.id != id)
+            {
+                throw new ArgumentException($"The ID of the Host in the body '{Host.id}' does not match the ID '{id}' in the URL");
+            }
+            await _logic.UpdateHost(Host);
+            return Host;
         }
 
-        // DELETE api/<HostController>/5
+
         [HttpDelete("{id}")]
-        public void DeleteHost(int id)
+        public async Task<IActionResult> DeleteHost(string id)
         {
+            //var Host = await _dynamoDBContext.LoadAsync<Host>(id);
+            var history = await _logic.GetHostById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"Host with ID '{id}' not found");
+            }
+            await _logic.DeleteHost(history);
+            return Ok();
         }
     }
 }

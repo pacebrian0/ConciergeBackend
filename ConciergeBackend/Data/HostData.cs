@@ -41,7 +41,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"SELECT *
                                     FROM conciergedb.HOST
-                                    WHERE id=:id
+                                    WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -68,8 +68,8 @@ namespace ConciergeBackend.Data
                             `URL`)
                             VALUES
                             (
-                            :name,
-                            :URL);
+                            @name,
+                            @URL);
                             ";
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
@@ -95,9 +95,9 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             UPDATE `conciergedb`.`HOST`
-                            SET `name` = :name,
-                                `url` = :URL
-                            WHERE id = :id";
+                            SET `name` = @name,
+                                `url` = @URL
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { host.name, host.id, host.URL });
@@ -119,7 +119,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             DELETE FROM `conciergedb`.`Host`
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { host.id });

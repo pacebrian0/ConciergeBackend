@@ -1,4 +1,5 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
+using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,43 +12,80 @@ namespace ConciergeBackend.Controllers
     public class UserController : ControllerBase, IUserController
     {
         private readonly ILogger<UserController> _logger;
+        private readonly IUserLogic _logic;
 
-        public UserController(ILogger<UserController> logger)
+
+        public UserController(ILogger<UserController> logger, IUserLogic logic)
         {
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
 
-        // GET: api/<UserController>
         [HttpGet]
-        public async Task<IEnumerable<User>> GetUserAsync()
+        public async Task<IEnumerable<User>> GetUser()
         {
-            var Users = new List<User>();
+            var Users = await _logic.GetUsers();
             return Users;
         }
 
-        // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string GetUserById(int id)
+        public async Task<User> GetUserById(string id)
         {
-            return "value";
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
+            var history = await _logic.GetUserById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"User with ID '{id}' not found");
+            }
+            return history;
         }
 
-        // POST api/<UserController>
         [HttpPost]
-        public void PostUser([FromBody] User user)
+        public async Task<User> CreateUser(User history)
         {
+            if (history == null)
+            {
+                throw new ArgumentNullException(nameof(history));
+            }
+            await _logic.PostUser(history);
+            return history;
         }
 
-        // PUT api/<UserController>/5
+
         [HttpPut("{id}")]
-        public void PutUser(int id, [FromBody] User user)
+        public async Task<User> UpdateUser(string id, User User)
         {
+            if (User == null)
+            {
+                throw new ArgumentNullException(nameof(User));
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (User.id != id)
+            {
+                throw new ArgumentException($"The ID of the User in the body '{User.id}' does not match the ID '{id}' in the URL");
+            }
+            await _logic.UpdateUser(User);
+            return User;
         }
 
-        // DELETE api/<UserController>/5
+
         [HttpDelete("{id}")]
-        public void DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
+            //var User = await _dynamoDBContext.LoadAsync<User>(id);
+            var history = await _logic.GetUserById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"User with ID '{id}' not found");
+            }
+            await _logic.DeleteUser(history);
+            return Ok();
         }
     }
 }

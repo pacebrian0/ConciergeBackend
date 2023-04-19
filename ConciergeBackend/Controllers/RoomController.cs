@@ -1,4 +1,5 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
+using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,43 +12,80 @@ namespace ConciergeBackend.Controllers
     public class RoomController : ControllerBase, IRoomController
     {
         private readonly ILogger<RoomController> _logger;
+        private readonly IRoomLogic _logic;
 
-        public RoomController(ILogger<RoomController> logger)
+
+        public RoomController(ILogger<RoomController> logger, IRoomLogic logic)
         {
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logic = logic ?? throw new ArgumentNullException(nameof(logic));
         }
 
-        // GET: api/<RoomController>
         [HttpGet]
-        public async Task<IEnumerable<Room>> GetRoomAsync()
+        public async Task<IEnumerable<Room>> GetRoom()
         {
-            var Rooms = new List<Room>();
+            var Rooms = await _logic.GetRooms();
             return Rooms;
         }
 
-        // GET api/<RoomController>/5
         [HttpGet("{id}")]
-        public string GetRoomById(int id)
+        public async Task<Room> GetRoomById(string id)
         {
-            return "value";
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+
+            var history = await _logic.GetRoomById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"Room with ID '{id}' not found");
+            }
+            return history;
         }
 
-        // POST api/<RoomController>
         [HttpPost]
-        public void PostRoom([FromBody] Room room)
+        public async Task<Room> CreateRoom(Room history)
         {
+            if (history == null)
+            {
+                throw new ArgumentNullException(nameof(history));
+            }
+            await _logic.PostRoom(history);
+            return history;
         }
 
-        // PUT api/<RoomController>/5
+
         [HttpPut("{id}")]
-        public void PutRoom(int id, [FromBody] Room room)
+        public async Task<Room> UpdateRoom(string id, Room Room)
         {
+            if (Room == null)
+            {
+                throw new ArgumentNullException(nameof(Room));
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (Room.id != id)
+            {
+                throw new ArgumentException($"The ID of the Room in the body '{Room.id}' does not match the ID '{id}' in the URL");
+            }
+            await _logic.UpdateRoom(Room);
+            return Room;
         }
 
-        // DELETE api/<RoomController>/5
+
         [HttpDelete("{id}")]
-        public void DeleteRoom(int id)
+        public async Task<IActionResult> DeleteRoom(string id)
         {
+            //var Room = await _dynamoDBContext.LoadAsync<Room>(id);
+            var history = await _logic.GetRoomById(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"Room with ID '{id}' not found");
+            }
+            await _logic.DeleteRoom(history);
+            return Ok();
         }
     }
 }

@@ -9,6 +9,5 @@ namespace ConciergeBackend.Controllers.Interfaces
         Task<IActionResult> DeleteAudit(int id);
         Task<IEnumerable<Audit>> GetAudits();
         Task<Audit> GetAuditsById(int id);
-
     }
 }

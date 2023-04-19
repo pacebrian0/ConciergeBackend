@@ -5,10 +5,10 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IRoomController
     {
-        void DeleteRoom(int id);
-        Task<IEnumerable<Room>> GetRoomAsync();
-        string GetRoomById(int id);
-        void PostRoom([FromBody] Room room);
-        void PutRoom(int id, [FromBody] Room room);
+        Task<Room> CreateRoom(Room history);
+        Task<IActionResult> DeleteRoom(string id);
+        Task<IEnumerable<Room>> GetRoom();
+        Task<Room> GetRoomById(string id);
+        Task<Room> UpdateRoom(string id, Room Room);
     }
 }

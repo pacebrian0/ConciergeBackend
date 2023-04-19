@@ -5,10 +5,10 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IStaffUserController
     {
-        void DeleteStaffUser(int id);
-        Task<IEnumerable<StaffUser>> GetStaffUserAsync();
-        string GetStaffUserById(int id);
-        void PostStaffUser([FromBody] StaffUser staffUser);
-        void PutStaffUser(int id, [FromBody] StaffUser staffUser);
+        Task<StaffUser> CreateStaffUser(StaffUser history);
+        Task<IActionResult> DeleteStaffUser(string id);
+        Task<IEnumerable<StaffUser>> GetStaffUser();
+        Task<StaffUser> GetStaffUserById(string id);
+        Task<StaffUser> UpdateStaffUser(string id, StaffUser StaffUser);
     }
 }

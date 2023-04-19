@@ -38,7 +38,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"SELECT *
                                     FROM conciergedb.PROPERTY
-                                    WHERE id=:id
+                                    WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -70,13 +70,13 @@ namespace ConciergeBackend.Data
                             `hostID`)
                             VALUES
                             (
-                            :name,
+                            @name,
                             now(),
-                            :createdBy,
+                            @createdBy,
                             now(),
-                            :modifiedBy,
+                            @modifiedBy,
                             'A',
-                            :hostID);
+                            @hostID);
 
                             ";
 
@@ -103,12 +103,12 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             UPDATE `conciergedb`.`PROPERTY`
-                            SET `name` = :name,
+                            SET `name` = @name,
                                 `modifiedOn` = now(),
-                                `modifiedBy` = :modifiedBy,
-                                `status` = :status,
-                                `hostID` = :hostID
-                            WHERE id = :id";
+                                `modifiedBy` = @modifiedBy,
+                                `status` = @status,
+                                `hostID` = @hostID
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { property.name, property.modifiedBy, property.status, property.hostID, property.id });
@@ -130,7 +130,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             DELETE FROM `conciergedb`.`PROPERTY`
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { property.id });

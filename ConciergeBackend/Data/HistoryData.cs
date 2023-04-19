@@ -39,7 +39,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"SELECT *
                                     FROM conciergedb.HISTORY
-                                    WHERE id=:id
+                                    WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -68,9 +68,9 @@ namespace ConciergeBackend.Data
                             `timestamp`)
                             VALUES
                             (
-                            :roomID,
-                            :reservationID,
-                            :userID,
+                            @roomID,
+                            @reservationID,
+                            @userID,
                             now()
                             )";
 
@@ -97,7 +97,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             DELETE FROM `conciergedb`.`HISTORY`
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { history.id });

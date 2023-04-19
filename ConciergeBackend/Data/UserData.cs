@@ -37,7 +37,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"SELECT *
                                     FROM conciergedb.USER
-                                    WHERE id=:id
+                                    WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -69,9 +69,9 @@ namespace ConciergeBackend.Data
                             `modifiedBy`)
                             VALUES
                             (
-                            :name,
-                            :surname,
-                            :email,
+                            @name,
+                            @surname,
+                            @email,
                             now(),
                             0,
                             now(),
@@ -100,12 +100,12 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             UPDATE `conciergedb`.`User`
-                            SET `name` = :name,
-                                `surname` = :surname,
-                                `email` = :email,
+                            SET `name` = @name,
+                                `surname` = @surname,
+                                `email` = @email,
                                 `modifiedOn` = now(),
                                 `modifiedBy` = 0
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { user.name, user.surname, user.email, user.id });
@@ -127,7 +127,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             DELETE FROM `conciergedb`.`User`
-                            WHERE id = :id";
+                            WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
                     await conn.ExecuteAsync(sql, new { user.id });
