@@ -5,6 +5,7 @@ using ConciergeBackend.Data.Interfaces;
 using ConciergeBackend.Logic;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddAuthentication().AddJwtBearer();
 
 builder.Services.AddScoped<IAuditLogic, AuditLogic>();
 builder.Services.AddScoped<IAuditData, AuditData>();
@@ -41,6 +43,7 @@ builder.Services.AddScoped<IStaffUserData, StaffUserData>();
 
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<IUserData, UserData>();
+
 
 
 var app = builder.Build();

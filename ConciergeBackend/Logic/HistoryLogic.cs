@@ -15,23 +15,31 @@ namespace ConciergeBackend.Logic
 
         public async Task<IEnumerable<History>> GetHistorys()
         {
-            // no need for AWS logic
+            
             return await _data.GetHistories();
 
         }
         public async Task<History> GetHistoryById(string id)
         {
-            // no need for AWS logic
             return await _data.GetHistoryById(id);
 
         }
 
-        public async Task PostHistory(History audit)
+        public async Task PostHistory(History history)
         {
-            //do AWS logic
 
             //do local logic
-            await _data.PostHistory(audit, true);
+            await _data.PostHistory(history, true);
+
+            //do remote logic
+            try
+            {
+                await _data.PostHistory(history, false);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public async Task DeleteHistory(History audit)

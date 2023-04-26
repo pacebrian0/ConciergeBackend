@@ -74,7 +74,7 @@ namespace ConciergeBackend.Data
                             (
                             @name,
                             @surname ,
-                            @property,
+                            @propertyID,
                             @email ,
                             now(),
                             @createdBy ,
@@ -86,7 +86,7 @@ namespace ConciergeBackend.Data
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { staffuser.name, staffuser.surname, staffuser.property, staffuser.email, staffuser.createdBy, staffuser.modifiedBy });
+                    await conn.ExecuteAsync(sql, new { staffuser.name, staffuser.surname, staffuser.propertyID, staffuser.email, staffuser.createdBy, staffuser.modifiedBy });
                 }
 
 
@@ -109,7 +109,7 @@ namespace ConciergeBackend.Data
                             UPDATE `conciergedb`.`STAFFUSER`
                             SET `name` = @name,
                                 `surname` = @surname,
-                                `propertyID` = @property,
+                                `propertyID` = @propertyID,
                                 `email` = @email,
                                 `modifiedOn` = now(),
                                 `modifiedBy` = @modifiedBy,
@@ -117,7 +117,7 @@ namespace ConciergeBackend.Data
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { staffuser.name, staffuser.surname, staffuser.property, staffuser.email, staffuser.modifiedBy, staffuser.status, staffuser.id });
+                    await conn.ExecuteAsync(sql, new { staffuser.name, staffuser.surname, staffuser.propertyID, staffuser.email, staffuser.modifiedBy, staffuser.status, staffuser.id });
                 }
 
 

@@ -9,5 +9,6 @@ namespace ConciergeBackend.Data.Interfaces
         Task<IEnumerable<Reservation>> GetReservations();
         Task PostReservation(Reservation reservation, bool local);
         Task UpdateReservation(Reservation reservation, bool local);
+        Task<IEnumerable<Reservation>> GetReservationsByUser(string userID);
     }
 }

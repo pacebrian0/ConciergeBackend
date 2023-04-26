@@ -35,23 +35,37 @@ namespace ConciergeBackend.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException(nameof(id));
 
-            var history = await _logic.GetReservationById(id);
-            if (history == null)
+            var res = await _logic.GetReservationById(id);
+            if (res == null)
             {
                 throw new ArgumentException($"Reservation with ID '{id}' not found");
             }
-            return history;
+            return res;
+        }
+
+        [HttpGet("user/{userID}")]
+        public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userID)
+        {
+            if (string.IsNullOrWhiteSpace(userID))
+                throw new ArgumentNullException(nameof(userID));
+
+            var res = await _logic.GetReservationsByUser(userID);
+            if (res == null)
+            {
+                throw new ArgumentException($"Reservation with user ID '{userID}' not found");
+            }
+            return res;
         }
 
         [HttpPost]
-        public async Task<Reservation> CreateReservation(Reservation history)
+        public async Task<Reservation> CreateReservation(Reservation res)
         {
-            if (history == null)
+            if (res == null)
             {
-                throw new ArgumentNullException(nameof(history));
+                throw new ArgumentNullException(nameof(res));
             }
-            await _logic.PostReservation(history);
-            return history;
+            await _logic.PostReservation(res);
+            return res;
         }
 
 
@@ -79,12 +93,12 @@ namespace ConciergeBackend.Controllers
         public async Task<IActionResult> DeleteReservation(string id)
         {
             //var Reservation = await _dynamoDBContext.LoadAsync<Reservation>(id);
-            var history = await _logic.GetReservationById(id);
-            if (history == null)
+            var res = await _logic.GetReservationById(id);
+            if (res == null)
             {
                 throw new ArgumentException($"Reservation with ID '{id}' not found");
             }
-            await _logic.DeleteReservation(history);
+            await _logic.DeleteReservation(res);
             return Ok();
         }
     }

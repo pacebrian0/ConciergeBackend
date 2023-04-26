@@ -71,7 +71,7 @@ namespace ConciergeBackend.Data
                             VALUES
                             (
                             @name,
-                            @property,
+                            @propertyID,
                             now(),
                             @createdBy,
                             now(),
@@ -81,7 +81,7 @@ namespace ConciergeBackend.Data
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { room.name, room.property, room.createdBy, room.modifiedBy });
+                    await conn.ExecuteAsync(sql, new { room.name, room.propertyID, room.createdBy, room.modifiedBy });
                 }
 
 
@@ -103,14 +103,14 @@ namespace ConciergeBackend.Data
                 const string sql = @"
                             UPDATE `conciergedb`.`ROOM`
                             SET `name` = @name,
-                                `propertyID` = @property,
+                                `propertyID` = @propertyID,
                                 `modifiedOn` = now(),
                                 `modifiedBy` = @modifiedBy,
                                 `status` = @status
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { room.name, room.property, room.modifiedBy, room.status, room.id });
+                    await conn.ExecuteAsync(sql, new { room.name, room.propertyID, room.modifiedBy, room.status, room.id });
                 }
 
 

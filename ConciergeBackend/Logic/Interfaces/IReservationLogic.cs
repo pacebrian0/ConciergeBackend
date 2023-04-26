@@ -9,5 +9,6 @@ namespace ConciergeBackend.Logic.Interfaces
         Task<IEnumerable<Reservation>> GetReservations();
         Task PostReservation(Reservation audit);
         Task UpdateReservation(Reservation audit);
+        Task<IEnumerable<Reservation>> GetReservationsByUser(string userID);
     }
 }

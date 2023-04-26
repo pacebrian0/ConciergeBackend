@@ -3,7 +3,7 @@
     public class Reservation
     {
         public string id { get; set; }
-        public Room room { get; set; }
+        public string roomID { get; set; }
         public string userID { get; set; }
         public bool expiresYN { get; set; }
         public string expiryDate { get; set; }

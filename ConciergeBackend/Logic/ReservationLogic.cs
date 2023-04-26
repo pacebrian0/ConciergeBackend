@@ -15,7 +15,7 @@ namespace ConciergeBackend.Logic
 
         public async Task<IEnumerable<Reservation>> GetReservations()
         {
-            // no need for AWS logic
+            
             return await _data.GetReservations();
 
         }
@@ -24,6 +24,11 @@ namespace ConciergeBackend.Logic
             // no need for AWS logic
             return await _data.GetReservationById(id);
 
+        }
+
+        public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userID)
+        {
+            return await _data.GetReservationsByUser(userID);
         }
 
         public async Task PostReservation(Reservation audit)

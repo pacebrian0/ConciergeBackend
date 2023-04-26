@@ -2,14 +2,15 @@
 {
     public class User
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string surname { get; set; }
-        public string email { get; set; }
-        public string createdOn { get; set; }
-        public string createdBy { get; set; }
-        public string modifiedOn { get; set; }
-        public string modifiedBy { get; set; }
-        public bool isActive { get; set; }
-    }
+        public string id { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string surname { get; set; } = string.Empty;
+        public string passwordHash { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string createdOn { get; set; } = string.Empty;
+        public string createdBy { get; set; } = string.Empty;
+        public string modifiedOn { get; set; } = string.Empty;
+        public string modifiedBy { get; set; } = string.Empty;
+        public bool isActive { get; set; } = true;
+    } 
 }

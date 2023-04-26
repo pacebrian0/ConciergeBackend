@@ -15,12 +15,63 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT *
-                                    FROM conciergedb.RESERVATION
+                const string sql = @"SELECT `Reservations`.`id`,
+                                        `Reservations`.`roomID`,
+                                        `Reservations`.`userID`,
+                                        `Reservations`.`expiryDate`,
+                                        `Reservations`.`createdOn`,
+                                        `Reservations`.`createdBy`,
+                                        `Reservations`.`modifiedOn`,
+                                        `Reservations`.`modifiedBy`,
+                                        `Reservations`.`status`,
+                                         insert(
+                                            insert(
+                                                insert(
+                                                insert(hex(`Reservations`.`reservationCode`),9,0,'-'),
+                                                14,0,'-'),
+                                                19,0,'-'),
+                                            24,0,'-') reservationCode
+                                    FROM `conciergedb`.`Reservations`;
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
                     return await conn.QueryAsync<Reservation>(sql);
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+        public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userID)
+        {
+            try
+            {
+                const string sql = @"SELECT `Reservations`.`id`,
+                                        `Reservations`.`roomID`,
+                                        `Reservations`.`userID`,
+                                        `Reservations`.`expiryDate`,
+                                        `Reservations`.`createdOn`,
+                                        `Reservations`.`createdBy`,
+                                        `Reservations`.`modifiedOn`,
+                                        `Reservations`.`modifiedBy`,
+                                        `Reservations`.`status`,
+                                         insert(
+                                            insert(
+                                                insert(
+                                                insert(hex(`Reservations`.`reservationCode`),9,0,'-'),
+                                                14,0,'-'),
+                                                19,0,'-'),
+                                            24,0,'-') reservationCode
+                                    FROM `conciergedb`.`Reservations`
+                                    WHERE userID=@userID
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryAsync<Reservation>(sql, new { userID });
 
                 }
             }
@@ -36,8 +87,23 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT *
-                                    FROM conciergedb.RESERVATION
+                const string sql = @"SELECT `Reservations`.`id`,
+                                        `Reservations`.`roomID`,
+                                        `Reservations`.`userID`,
+                                        `Reservations`.`expiryDate`,
+                                        `Reservations`.`createdOn`,
+                                        `Reservations`.`createdBy`,
+                                        `Reservations`.`modifiedOn`,
+                                        `Reservations`.`modifiedBy`,
+                                        `Reservations`.`status`,
+                                         insert(
+                                            insert(
+                                                insert(
+                                                insert(hex(`Reservations`.`reservationCode`),9,0,'-'),
+                                                14,0,'-'),
+                                                19,0,'-'),
+                                            24,0,'-') reservationCode
+                                    FROM `conciergedb`.`Reservations`
                                     WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
@@ -71,7 +137,7 @@ namespace ConciergeBackend.Data
                                 `status`)
                                 VALUES
                                 (
-                                @room ,
+                                @roomID ,
                                 @userID ,
                                 @expiryDate ,
                                 now() ,
@@ -83,7 +149,7 @@ namespace ConciergeBackend.Data
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { reservation.room, reservation.userID, reservation.expiryDate, reservation.createdBy, reservation.modifiedBy });
+                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.createdBy, reservation.modifiedBy });
                 }
 
 
@@ -104,7 +170,7 @@ namespace ConciergeBackend.Data
             {
                 const string sql = @"
                             UPDATE `conciergedb`.`RESERVATION`
-                            SET `roomID` = @room,
+                            SET `roomID` = @roomID,
                                 `userID` = @userID,
                                 `expiryDate` = @expiryDate,
                                 `modifiedOn` = now(),
@@ -113,7 +179,7 @@ namespace ConciergeBackend.Data
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { reservation.room, reservation.userID, reservation.expiryDate, reservation.modifiedBy, reservation.status, reservation.id });
+                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.modifiedBy, reservation.status, reservation.id });
                 }
 
 

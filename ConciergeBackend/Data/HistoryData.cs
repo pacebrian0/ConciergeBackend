@@ -76,7 +76,7 @@ namespace ConciergeBackend.Data
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { history.room, history.reservation, history.userID });
+                    await conn.ExecuteAsync(sql, new { history.roomID, history.reservationID, history.userID });
                 }
 
 

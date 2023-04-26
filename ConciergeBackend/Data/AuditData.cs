@@ -37,15 +37,31 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"INSERT INTO conciergedb.AUDIT 
-                                        (awsID, userID, timestamp, table_name, field_name, action, old_value, new_value, comments)
-                                    VALUES
-                                        (:AWSID, :USERID, :TIMESTAMP, :TABLENAME, :FIELDNAME, :ACTION, :OLDVALUE, :NEWVALUE, :COMMENTS);
-                                    
+                const string sql = @"INSERT INTO `conciergedb`.`Audit`
+                                        (
+                                        `userID`,
+                                        `timestamp`,
+                                        `table_name`,
+                                        `field_name`,
+                                        `action`,
+                                        `old_value`,
+                                        `new_value`,
+                                        `comments`)
+                                        VALUES
+                                        (
+                                        :userID,
+                                        :timestamp,
+                                        :table,
+                                        :field,
+                                        :action,
+                                        :oldvalue,
+                                        :newvalue,
+                                        :comments);
+
                                     ";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql);
+                    await conn.ExecuteAsync(sql,new {audit.userID, audit.timestamp, audit.table, audit.field, audit.action, audit.oldvalue, audit.newvalue, audit.comments });
                 }
             }
             catch (Exception e)
