@@ -53,6 +53,28 @@ namespace ConciergeBackend.Data
 
         }
 
+        public async Task<User> GetUserByEmail(string email)
+        {
+            try
+            {
+                const string sql = @"SELECT *
+                                    FROM conciergedb.USER
+                                    WHERE email=@email
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryFirstOrDefaultAsync<User>(sql, new { email });
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+
         public async Task PostUser(User user, bool local)
         {
             try

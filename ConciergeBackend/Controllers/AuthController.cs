@@ -1,6 +1,8 @@
-﻿using ConciergeBackend.Models;
+﻿using ConciergeBackend.Logic.Interfaces;
+using ConciergeBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,49 +15,69 @@ namespace ConciergeBackend.Controllers
     [ApiController]
     public class AuthController : ControllerBase, IAuthController
     {
-        private readonly IConfiguration _configuration;
-        public AuthController(IConfiguration configuration)
+
+        private readonly IUserLogic _ulogic;
+        private readonly IConfiguration _conf;
+
+
+        public AuthController(ILogger<AuthController> logger,  IUserLogic uLogic, IConfiguration conf)
         {
-            _configuration = configuration;
+            _ulogic = uLogic;
+            _conf = conf;
         }
-        public static User user = new User();
+
 
         [HttpPost("register")]
-        public ActionResult<User> Register(UserDTO request)
+        public async Task<ActionResult<User>> Register(UserRegisterDTO request)
         {
-            string passHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            user.email = request.Username;
-            user.passwordHash = passHash;
+            var user = await _ulogic.GetUserByEmail(request.Username);
+            if (user != null)
+            {
+                return BadRequest("User Exists");
+            }
 
-            return Ok(User);
+            string passHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            user = new User
+            {
+                name = request.Name,
+                surname = request.Surname,
+                passwordHash = passHash,
+                email = request.Username
+            };
+
+            await _ulogic.PostUser(user);
+
+            return user;
 
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login(UserDTO request)
+        public async Task<ActionResult<User>> Login(UserLoginDTO request)
         {
-            if (user.email != request.Username)
+            var user = await _ulogic.GetUserByEmail(request.Username);
+            if (user == null)
             {
                 return BadRequest("Login Incorrect.");
             }
+
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.passwordHash))
             {
                 return BadRequest("Login Incorrect.");
             }
-            string token = CreateToken(user);
-            return Ok(token);
+
+            user.passwordHash = CreateToken(user);
+            return user; 
+            ;
 
         }
-
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Email, user.email)
-
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_conf.GetSection("AppSettings:Token").Value!));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(claims: claims,
                 expires: DateTime.Now.AddDays(1),
@@ -63,5 +85,7 @@ namespace ConciergeBackend.Controllers
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
+
+
     }
 }

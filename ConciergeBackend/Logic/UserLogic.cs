@@ -25,6 +25,10 @@ namespace ConciergeBackend.Logic
             return await _data.GetUserById(id);
 
         }
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _data.GetUserByEmail(email);
+        }
 
         public async Task PostUser(User audit)
         {

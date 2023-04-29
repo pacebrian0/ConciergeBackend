@@ -5,7 +5,7 @@ namespace ConciergeBackend.Controllers
 {
     public interface IAuthController
     {
-        ActionResult<string> Login(UserDTO request);
-        ActionResult<User> Register(UserDTO request);
+        Task<ActionResult<User>> Login(UserLoginDTO request);
+        Task<ActionResult<User>> Register(UserRegisterDTO request);
     }
 }

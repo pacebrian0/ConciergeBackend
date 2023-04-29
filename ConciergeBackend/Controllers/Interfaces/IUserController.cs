@@ -5,7 +5,7 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IUserController
     {
-        Task<User> CreateUser(User history);
+        //Task<User> CreateUser(User history);
         Task<IActionResult> DeleteUser(string id);
         Task<IEnumerable<User>> GetUser();
         Task<User> GetUserById(string id);

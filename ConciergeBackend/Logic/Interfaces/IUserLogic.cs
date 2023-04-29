@@ -9,5 +9,6 @@ namespace ConciergeBackend.Logic.Interfaces
         Task<IEnumerable<User>> GetUsers();
         Task PostUser(User audit);
         Task UpdateUser(User audit);
+        Task<User> GetUserByEmail(string email);
     }
 }

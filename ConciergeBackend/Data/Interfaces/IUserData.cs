@@ -9,5 +9,6 @@ namespace ConciergeBackend.Data.Interfaces
         Task<IEnumerable<User>> GetUsers();
         Task PostUser(User user, bool local);
         Task UpdateUser(User user, bool local);
+        Task<User> GetUserByEmail(string email);
     }
 }

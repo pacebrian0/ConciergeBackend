@@ -43,16 +43,16 @@ namespace ConciergeBackend.Controllers
             return history;
         }
 
-        [HttpPost]
-        public async Task<User> CreateUser(User history)
-        {
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
-            await _logic.PostUser(history);
-            return history;
-        }
+        //[HttpPost]
+        //public async Task<User> CreateUser(User history)
+        //{
+        //    if (history == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(history));
+        //    }
+        //    await _logic.PostUser(history);
+        //    return history;
+        //}
 
 
         [HttpPut("{id}")]
