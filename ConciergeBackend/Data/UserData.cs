@@ -15,8 +15,16 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT *
-                                    FROM conciergedb.USER
+                const string sql = @"SELECT `user`.`id`,
+                                        `user`.`name`,
+                                        `user`.`surname`,
+                                        `user`.`email`,
+                                        `user`.`createdOn`,
+                                        `user`.`createdBy`,
+                                        `user`.`modifiedOn`,
+                                        `user`.`modifiedBy`,
+                                        `user`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`user`
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -31,12 +39,20 @@ namespace ConciergeBackend.Data
             }
 
         }
-        public async Task<User> GetUserById(string id)
+        public async Task<User> GetUserById(int id)
         {
             try
             {
-                const string sql = @"SELECT *
-                                    FROM conciergedb.USER
+                const string sql = @"SELECT `user`.`id`,
+                                        `user`.`name`,
+                                        `user`.`surname`,
+                                        `user`.`email`,
+                                        `user`.`createdOn`,
+                                        `user`.`createdBy`,
+                                        `user`.`modifiedOn`,
+                                        `user`.`modifiedBy`,
+                                        `user`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`user`
                                     WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
@@ -57,8 +73,16 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT *
-                                    FROM conciergedb.USER
+                const string sql = @"SELECT `user`.`id`,
+                                        `user`.`name`,
+                                        `user`.`surname`,
+                                        `user`.`email`,
+                                        `user`.`createdOn`,
+                                        `user`.`createdBy`,
+                                        `user`.`modifiedOn`,
+                                        `user`.`modifiedBy`,
+                                        `user`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`user`
                                     WHERE email=@email
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
@@ -75,7 +99,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task PostUser(User user, bool local)
+        public async Task<int> PostUser(User user, bool local)
         {
             try
             {
@@ -88,20 +112,23 @@ namespace ConciergeBackend.Data
                             `createdOn`,
                             `createdBy`,
                             `modifiedOn`,
-                            `modifiedBy`)
+                            `modifiedBy`,
+                            `password_hash`)
                             VALUES
                             (
                             @name,
                             @surname,
                             @email,
-                            now(),
+                            UTC_TIMESTAMP(),
                             0,
-                            now(),
-                            0)";
+                            UTC_TIMESTAMP(),
+                            0,
+                            @passwordHash); 
+                            SELECT id from `conciergedb`.`User` where email = @email;";
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { user.name, user.surname, user.email });
+                    return await conn.ExecuteScalarAsync<int>(sql, new { user.name, user.surname, user.email, user.passwordHash });
                 }
 
 
@@ -125,7 +152,7 @@ namespace ConciergeBackend.Data
                             SET `name` = @name,
                                 `surname` = @surname,
                                 `email` = @email,
-                                `modifiedOn` = now(),
+                                `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = 0
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))

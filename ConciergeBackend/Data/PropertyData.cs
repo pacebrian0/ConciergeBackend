@@ -32,7 +32,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<Property> GetPropertyById(string id)
+        public async Task<Property> GetPropertyById(int id)
         {
             try
             {
@@ -71,9 +71,9 @@ namespace ConciergeBackend.Data
                             VALUES
                             (
                             @name,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @createdBy,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @modifiedBy,
                             'A',
                             @hostID);
@@ -104,7 +104,7 @@ namespace ConciergeBackend.Data
                 const string sql = @"
                             UPDATE `conciergedb`.`PROPERTY`
                             SET `name` = @name,
-                                `modifiedOn` = now(),
+                                `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = @modifiedBy,
                                 `status` = @status,
                                 `hostID` = @hostID

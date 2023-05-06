@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RoomController : ControllerBase, IRoomController
     {
         private readonly ILogger<RoomController> _logger;
@@ -30,10 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Room> GetRoomById(string id)
+        public async Task<Room> GetRoomById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
 
             var history = await _logic.GetRoomById(id);
             if (history == null)
@@ -43,40 +43,67 @@ namespace ConciergeBackend.Controllers
             return history;
         }
 
-        [HttpPost]
-        public async Task<Room> CreateRoom(Room history)
+        [HttpGet("property/{id}")]
+        public async Task<IEnumerable<Room>> GetRoomsByProperty(int id)
         {
-            if (history == null)
+
+
+            var room = await _logic.GetRoomsByProperty(id);
+            if (room == null)
             {
-                throw new ArgumentNullException(nameof(history));
+                throw new ArgumentException($"Rooms with property ID '{id}' not found");
             }
-            await _logic.PostRoom(history);
-            return history;
+            return room;
+        }
+
+        [HttpPost]
+        public async Task<Room> CreateRoom(RoomPost room)
+        {
+            if (room == null)
+            {
+                throw new ArgumentNullException(nameof(room));
+            }
+            var dbRoom = new Room {
+                id = 0,
+                name = room.name,
+                propertyID = room.propertyID,
+                createdBy = room.createdBy,
+                modifiedBy = room.createdBy,
+                createdOn = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:sszzz"),
+                modifiedOn = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:sszzz"),
+                status = "A"
+
+
+            };
+            await _logic.PostRoom(dbRoom);
+            return dbRoom;
         }
 
 
         [HttpPut("{id}")]
-        public async Task<Room> UpdateRoom(string id, Room Room)
+        public async Task<Room> UpdateRoom(RoomPut Room)
         {
             if (Room == null)
             {
                 throw new ArgumentNullException(nameof(Room));
             }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-            if (Room.id != id)
-            {
-                throw new ArgumentException($"The ID of the Room in the body '{Room.id}' does not match the ID '{id}' in the URL");
-            }
-            await _logic.UpdateRoom(Room);
-            return Room;
+
+            var dbRoom = await _logic.GetRoomById(Room.id);
+
+            dbRoom.name = Room.name;
+            dbRoom.propertyID = Room.propertyID;
+            dbRoom.modifiedBy = Room.modifiedBy;
+            dbRoom.modifiedOn = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss");
+            dbRoom.status = Room.status;
+
+
+            await _logic.UpdateRoom(dbRoom);
+            return dbRoom;
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRoom(string id)
+        public async Task<IActionResult> DeleteRoom(int id)
         {
             //var Room = await _dynamoDBContext.LoadAsync<Room>(id);
             var history = await _logic.GetRoomById(id);
@@ -87,5 +114,7 @@ namespace ConciergeBackend.Controllers
             await _logic.DeleteRoom(history);
             return Ok();
         }
+
+
     }
 }

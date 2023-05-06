@@ -5,9 +5,9 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IHistoryController
     {
-        Task<History> CreateHistory(History history);
-        Task<IActionResult> DeleteHistory(string id);
+        Task<History> CreateHistory(HistoryPost history);
+        Task<IActionResult> DeleteHistory(int id);
         Task<IEnumerable<History>> GetHistory();
-        Task<History> GetHistoryById(string id);
+        Task<History> GetHistoryById(int id);
     }
 }

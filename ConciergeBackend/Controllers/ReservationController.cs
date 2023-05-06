@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ReservationController : ControllerBase, IReservationController
     {
         private readonly ILogger<ReservationController> _logger;
@@ -30,10 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Reservation> GetReservationById(string id)
+        public async Task<Reservation> GetReservationById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
 
             var res = await _logic.GetReservationById(id);
             if (res == null)
@@ -44,10 +44,9 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("user/{userID}")]
-        public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userID)
+        public async Task<IEnumerable<Reservation>> GetReservationsByUser(int userID)
         {
-            if (string.IsNullOrWhiteSpace(userID))
-                throw new ArgumentNullException(nameof(userID));
+
 
             var res = await _logic.GetReservationsByUser(userID);
             if (res == null)
@@ -58,39 +57,58 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<Reservation> CreateReservation(Reservation res)
+        public async Task<Reservation> CreateReservation(ReservationPost res)
         {
             if (res == null)
             {
                 throw new ArgumentNullException(nameof(res));
             }
-            await _logic.PostReservation(res);
-            return res;
+            var dbRes = new Reservation { 
+                id = 0,
+                roomID = res.roomID,
+                userID = res.userID,
+                expiresYN = res.expiresYN,
+                expiryDate = res.ExpiryDate,
+                reservationCode = "",
+                createdBy = res.createdBy,
+                modifiedBy = res.createdBy,
+                createdOn = DateTime.UtcNow,
+                modifiedOn = DateTime.UtcNow,
+                status = "A",
+                isActive = true,
+                reservationDate = res._ReservationDate
+            
+            };
+            await _logic.PostReservation(dbRes);
+            return dbRes;
         }
 
 
         [HttpPut("{id}")]
-        public async Task<Reservation> UpdateReservation(string id, Reservation Reservation)
+        public async Task<Reservation> UpdateReservation(ReservationPut res)
         {
-            if (Reservation == null)
+            if (res == null)
             {
-                throw new ArgumentNullException(nameof(Reservation));
+                throw new ArgumentNullException(nameof(res));
             }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-            if (Reservation.id != id)
-            {
-                throw new ArgumentException($"The ID of the Reservation in the body '{Reservation.id}' does not match the ID '{id}' in the URL");
-            }
-            await _logic.UpdateReservation(Reservation);
-            return Reservation;
+
+            var dbRes = await _logic.GetReservationById(res.id);
+
+            dbRes.expiryDate = res.ExpiryDate;
+            dbRes.expiresYN = res.expiresYN;
+            dbRes.roomID = res.roomID;
+            dbRes.userID = res.userID;
+            dbRes.modifiedBy = res.modifiedBy;
+            dbRes.modifiedOn = DateTime.UtcNow;
+            dbRes.reservationDate = res._ReservationDate;
+
+            await _logic.UpdateReservation(dbRes);
+            return dbRes;
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReservation(string id)
+        public async Task<IActionResult> DeleteReservation(int id)
         {
             //var Reservation = await _dynamoDBContext.LoadAsync<Reservation>(id);
             var res = await _logic.GetReservationById(id);

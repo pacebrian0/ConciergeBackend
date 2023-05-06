@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetRooms();
 
         }
-        public async Task<Room> GetRoomById(string id)
+        public async Task<Room> GetRoomById(int id)
         {
             // no need for AWS logic
             return await _data.GetRoomById(id);
@@ -48,6 +48,11 @@ namespace ConciergeBackend.Logic
 
             //do local logic
             await _data.DeleteRoom(audit, true);
+        }
+
+        public async Task<IEnumerable<Room>> GetRoomsByProperty(int id)
+        {
+            return await _data.GetRoomsByProperty(id);
         }
     }
 }

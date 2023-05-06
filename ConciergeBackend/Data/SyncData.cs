@@ -32,7 +32,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<Sync> GetSyncById(string id)
+        public async Task<Sync> GetSyncById(int id)
         {
             try
             {

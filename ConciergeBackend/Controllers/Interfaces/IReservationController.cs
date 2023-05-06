@@ -5,11 +5,11 @@ namespace ConciergeBackend.Controllers.Interfaces
 {
     public interface IReservationController
     {
-        Task<Reservation> CreateReservation(Reservation history);
-        Task<IActionResult> DeleteReservation(string id);
+        Task<Reservation> CreateReservation(ReservationPost res);
+        Task<IActionResult> DeleteReservation(int id);
         Task<IEnumerable<Reservation>> GetReservation();
-        Task<Reservation> GetReservationById(string id);
-        Task<Reservation> UpdateReservation(string id, Reservation Reservation);
-        Task<IEnumerable<Reservation>> GetReservationsByUser(string userID);
+        Task<Reservation> GetReservationById(int id);
+        Task<Reservation> UpdateReservation(ReservationPut res);
+        Task<IEnumerable<Reservation>> GetReservationsByUser(int userID);
     }
 }

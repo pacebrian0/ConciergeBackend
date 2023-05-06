@@ -1,5 +1,4 @@
 ﻿using ConciergeBackend.Data.Interfaces;
-using ConciergeBackend.Models;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
@@ -35,7 +34,7 @@ namespace ConciergeBackend.Data
             }
 
         }
-        public async Task<Host> GetHostById(string id)
+        public async Task<Host> GetHostById(int id)
         {
             try
             {

@@ -5,9 +5,9 @@ namespace ConciergeBackend.Data.Interfaces
     public interface IUserData
     {
         Task DeleteUser(User user, bool local);
-        Task<User> GetUserById(string id);
+        Task<User> GetUserById(int id);
         Task<IEnumerable<User>> GetUsers();
-        Task PostUser(User user, bool local);
+        Task<int> PostUser(User user, bool local);
         Task UpdateUser(User user, bool local);
         Task<User> GetUserByEmail(string email);
     }

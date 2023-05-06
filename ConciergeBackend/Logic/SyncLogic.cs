@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetSyncs();
 
         }
-        public async Task<Sync> GetSyncById(string id)
+        public async Task<Sync> GetSyncById(int id)
         {
             return await _data.GetSyncById(id);
 

@@ -2,10 +2,17 @@
 {
     public class History
     {
-        public string id { get; set; }
-        public string roomID { get; set; }
-        public string reservationID { get; set; }
-        public string userID { get; set; }
+        public int id { get; set; }
+        public int roomID { get; set; }
+        public int reservationID { get; set; }
+        public int userID { get; set; }
         public string timestamp { get; set; }
+    }
+
+    public class HistoryPost
+    {
+        public int roomID { get; set; }
+        public int reservationID { get; set; }
+        public int userID { get; set; }
     }
 }

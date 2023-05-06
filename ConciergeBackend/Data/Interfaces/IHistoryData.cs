@@ -6,7 +6,7 @@ namespace ConciergeBackend.Data.Interfaces
     {
         Task DeleteHistory(History history, bool local);
         Task<IEnumerable<History>> GetHistories();
-        Task<History> GetHistoryById(string id);
+        Task<History> GetHistoryById(int id);
         Task PostHistory(History history, bool local);
     }
 }

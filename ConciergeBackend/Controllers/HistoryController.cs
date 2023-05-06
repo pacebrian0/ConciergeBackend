@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HistoryController : ControllerBase, IHistoryController
     {
         private readonly ILogger<HistoryController> _logger;
@@ -30,10 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<History> GetHistoryById(string id)
+        public async Task<History> GetHistoryById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
 
             var history = await _logic.GetHistoryById(id);
             if (history == null)
@@ -44,19 +44,28 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<History> CreateHistory(History history)
+        public async Task<History> CreateHistory(HistoryPost history)
         {
             if (history == null)
             {
                 throw new ArgumentNullException(nameof(history));
             }
-            await _logic.PostHistory(history);
-            return history;
+            var dbHistory = new History { 
+            
+                id = 0,
+                roomID = history.roomID,
+                reservationID = history.reservationID,
+                userID = history.userID,
+                timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:sszzz")
+            
+            };
+            await _logic.PostHistory(dbHistory);
+            return dbHistory;
         }
 
         /*
         [HttpPut("{id}")]
-        public async Task<History> UpdateHistory(string id, History History)
+        public async Task<History> UpdateHistory(int id, History History)
         {
             if (History == null)
             {
@@ -76,7 +85,7 @@ namespace ConciergeBackend.Controllers
         */
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHistory(string id)
+        public async Task<IActionResult> DeleteHistory(int id)
         {
             //var History = await _dynamoDBContext.LoadAsync<History>(id);
             var history = await _logic.GetHistoryById(id);

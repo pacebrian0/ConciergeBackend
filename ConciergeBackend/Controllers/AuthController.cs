@@ -28,7 +28,7 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserRegisterDTO request)
+        public async Task<ActionResult<UserResponseDTO>> Register(UserRegisterDTO request)
         {
             var user = await _ulogic.GetUserByEmail(request.Username);
             if (user != null)
@@ -36,7 +36,7 @@ namespace ConciergeBackend.Controllers
                 return BadRequest("User Exists");
             }
 
-            string passHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            string passHash = BCrypt.Net.BCrypt.HashPassword(request.Password, BCrypt.Net.BCrypt.GenerateSalt());
             user = new User
             {
                 name = request.Name,
@@ -45,14 +45,14 @@ namespace ConciergeBackend.Controllers
                 email = request.Username
             };
 
-            await _ulogic.PostUser(user);
+            var id = await _ulogic.PostUser(user);
 
-            return user;
+            return new UserResponseDTO { ID=id, Token= CreateToken(user)};
 
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login(UserLoginDTO request)
+        public async Task<ActionResult<UserResponseDTO>> Login(UserLoginDTO request)
         {
             var user = await _ulogic.GetUserByEmail(request.Username);
             if (user == null)
@@ -65,8 +65,7 @@ namespace ConciergeBackend.Controllers
                 return BadRequest("Login Incorrect.");
             }
 
-            user.passwordHash = CreateToken(user);
-            return user; 
+            return new UserResponseDTO { ID = user.id, Token = CreateToken(user) };
             ;
 
         }

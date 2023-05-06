@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetHistories();
 
         }
-        public async Task<History> GetHistoryById(string id)
+        public async Task<History> GetHistoryById(int id)
         {
             return await _data.GetHistoryById(id);
 

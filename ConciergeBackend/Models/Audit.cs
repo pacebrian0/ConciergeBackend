@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Http.HttpResults;
+
 namespace ConciergeBackend.Models
 {
     public class Audit
     {
-        public string id { get; set; }
-        public string userID { get; set; }
+        public int id { get; set; }
+        public int userID { get; set; }
         public DateTime timestamp { get; set; }
         public string table { get; set; }
         public string field { get; set; }

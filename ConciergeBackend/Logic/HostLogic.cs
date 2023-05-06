@@ -1,6 +1,5 @@
 ﻿using ConciergeBackend.Data.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
-using ConciergeBackend.Models;
 using Host = ConciergeBackend.Models.Host;
 
 namespace ConciergeBackend.Logic
@@ -20,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetHosts();
 
         }
-        public async Task<Host> GetHostById(string id)
+        public async Task<Host> GetHostById(int id)
         {
             // no need for AWS logic
             return await _data.GetHostById(id);

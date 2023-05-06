@@ -1,6 +1,8 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +11,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase, IUserController
     {
         private readonly ILogger<UserController> _logger;
@@ -30,10 +33,9 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<User> GetUserById(string id)
+        public async Task<User> GetUserById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
+
 
             var history = await _logic.GetUserById(id);
             if (history == null)
@@ -56,27 +58,31 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<User> UpdateUser(string id, User User)
+        public async Task<User> UpdateUser(UserPut User)
         {
             if (User == null)
             {
                 throw new ArgumentNullException(nameof(User));
             }
-            if (string.IsNullOrEmpty(id))
+            var user = await _logic.GetUserById(User.id);
+            user.modifiedOn = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss");
+            user.email = User.email;
+            user.name = User.name;
+            user.surname = User.surname;
+            user.isActive = User.isActive;
+            if (!BCrypt.Net.BCrypt.Verify(User.password, user.passwordHash))
             {
-                throw new ArgumentNullException(nameof(id));
+                user.passwordHash = BCrypt.Net.BCrypt.HashPassword(User.password, BCrypt.Net.BCrypt.GenerateSalt());
+
             }
-            if (User.id != id)
-            {
-                throw new ArgumentException($"The ID of the User in the body '{User.id}' does not match the ID '{id}' in the URL");
-            }
-            await _logic.UpdateUser(User);
-            return User;
+
+            await _logic.UpdateUser(user);
+            return user;
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             //var User = await _dynamoDBContext.LoadAsync<User>(id);
             var history = await _logic.GetUserById(id);

@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetStaffUsers();
 
         }
-        public async Task<StaffUser> GetStaffUserById(string id)
+        public async Task<StaffUser> GetStaffUserById(int id)
         {
             // no need for AWS logic
             return await _data.GetStaffUserById(id);

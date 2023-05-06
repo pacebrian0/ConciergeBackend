@@ -33,7 +33,7 @@ namespace ConciergeBackend.Data
             }
 
         }
-        public async Task<History> GetHistoryById(string id)
+        public async Task<History> GetHistoryById(int id)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace ConciergeBackend.Data
                             @roomID,
                             @reservationID,
                             @userID,
-                            now()
+                            UTC_TIMESTAMP()
                             )";
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))

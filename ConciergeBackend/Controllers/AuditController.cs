@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuditController : ControllerBase, IAuditController
     {
         private readonly ILogger<AuditController> _logger;
@@ -54,11 +56,6 @@ namespace ConciergeBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAudit(int id)
         {
-            //var Audit = await _dynamoDBContext.LoadAsync<Audit>(id);
-            if (id == null)
-            {
-                throw new ArgumentException($"Audit with ID '{id}' not found");
-            }
             //await _dynamoDBContext.DeleteAsync(Audit);
             return NoContent();
         }

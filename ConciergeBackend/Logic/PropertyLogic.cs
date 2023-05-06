@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetPropertys();
 
         }
-        public async Task<Property> GetPropertyById(string id)
+        public async Task<Property> GetPropertyById(int id)
         {
             // no need for AWS logic
             return await _data.GetPropertyById(id);

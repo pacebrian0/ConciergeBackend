@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /ConciergeBackend/appsettings.json
 /ConciergeHelper
+/docker-compose.yaml
+/Dockerfile

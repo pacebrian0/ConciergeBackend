@@ -7,6 +7,6 @@ namespace ConciergeBackend.Data.Interfaces
         Task<IEnumerable<Sync>> GetSyncs();
         Task PostSync(Sync sync, bool local);
         Task UpdateSync(Sync sync, bool local);
-        Task<Sync> GetSyncById(string id);
+        Task<Sync> GetSyncById(int id);
     }
 }

@@ -19,6 +19,7 @@ namespace ConciergeBackend.Data
                                         `Reservations`.`roomID`,
                                         `Reservations`.`userID`,
                                         `Reservations`.`expiryDate`,
+                                        `Reservations`.`reservationDate`,
                                         `Reservations`.`createdOn`,
                                         `Reservations`.`createdBy`,
                                         `Reservations`.`modifiedOn`,
@@ -46,7 +47,7 @@ namespace ConciergeBackend.Data
             }
 
         }
-        public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userID)
+        public async Task<IEnumerable<Reservation>> GetReservationsByUser(int userID)
         {
             try
             {
@@ -54,6 +55,7 @@ namespace ConciergeBackend.Data
                                         `Reservations`.`roomID`,
                                         `Reservations`.`userID`,
                                         `Reservations`.`expiryDate`,
+                                        `Reservations`.`reservationDate`,
                                         `Reservations`.`createdOn`,
                                         `Reservations`.`createdBy`,
                                         `Reservations`.`modifiedOn`,
@@ -83,7 +85,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<Reservation> GetReservationById(string id)
+        public async Task<Reservation> GetReservationById(int id)
         {
             try
             {
@@ -91,6 +93,7 @@ namespace ConciergeBackend.Data
                                         `Reservations`.`roomID`,
                                         `Reservations`.`userID`,
                                         `Reservations`.`expiryDate`,
+                                        `Reservations`.`reservationDate`,
                                         `Reservations`.`createdOn`,
                                         `Reservations`.`createdBy`,
                                         `Reservations`.`modifiedOn`,
@@ -130,6 +133,7 @@ namespace ConciergeBackend.Data
                                 `roomID`,
                                 `userID`,
                                 `expiryDate`,
+                                `reservationDate`,
                                 `createdOn`,
                                 `createdBy`,
                                 `modifiedOn`,
@@ -140,16 +144,17 @@ namespace ConciergeBackend.Data
                                 @roomID ,
                                 @userID ,
                                 @expiryDate ,
-                                now() ,
+                                @reservationDate,
+                                UTC_TIMESTAMP() ,
                                 @createdBy ,
-                                now() ,
+                                UTC_TIMESTAMP() ,
                                 @modifiedBy ,
                                 'A' );
                             ";
 
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.createdBy, reservation.modifiedBy });
+                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.createdBy, reservation.modifiedBy, reservation.reservationDate });
                 }
 
 
@@ -173,13 +178,14 @@ namespace ConciergeBackend.Data
                             SET `roomID` = @roomID,
                                 `userID` = @userID,
                                 `expiryDate` = @expiryDate,
-                                `modifiedOn` = now(),
+                                `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = @modifiedBy,
+                                `reservationDate` = @reservationDate,
                                 `status` = @status
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
-                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.modifiedBy, reservation.status, reservation.id });
+                    await conn.ExecuteAsync(sql, new { reservation.roomID, reservation.userID, reservation.expiryDate, reservation.modifiedBy, reservation.status, reservation.id, reservation.reservationDate });
                 }
 
 

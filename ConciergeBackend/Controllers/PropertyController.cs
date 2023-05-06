@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PropertyController : ControllerBase, IPropertyController
     {
         private readonly ILogger<PropertyController> _logger;
@@ -30,10 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Property> GetPropertyById(string id)
+        public async Task<Property> GetPropertyById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
 
             var history = await _logic.GetPropertyById(id);
             if (history == null)
@@ -44,39 +44,51 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<Property> CreateProperty(Property history)
+        public async Task<Property> CreateProperty(PropertyPost property)
         {
-            if (history == null)
+            if (property == null)
             {
-                throw new ArgumentNullException(nameof(history));
+                throw new ArgumentNullException(nameof(property));
             }
-            await _logic.PostProperty(history);
-            return history;
+
+            var dbProp = new Property {
+                id = 0,
+                name = property.name,
+                createdOn = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:sszzz"),
+                modifiedOn  = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:sszzz"),
+                createdBy = property.createdBy,
+                modifiedBy = property.createdBy,
+                status = "A",
+                isActive = true
+            };
+
+            await _logic.PostProperty(dbProp);
+            return dbProp;
         }
 
 
         [HttpPut("{id}")]
-        public async Task<Property> UpdateProperty(string id, Property Property)
+        public async Task<Property> UpdateProperty(PropertyPut property)
         {
-            if (Property == null)
+            if (property == null)
             {
-                throw new ArgumentNullException(nameof(Property));
+                throw new ArgumentNullException(nameof(property));
             }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-            if (Property.id != id)
-            {
-                throw new ArgumentException($"The ID of the Property in the body '{Property.id}' does not match the ID '{id}' in the URL");
-            }
-            await _logic.UpdateProperty(Property);
-            return Property;
+
+            var dbProp = await _logic.GetPropertyById(property.id);
+            dbProp.modifiedOn = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss");
+            dbProp.name = property.name;
+            dbProp.status = property.status;
+            dbProp.isActive = property.isActive;
+            dbProp.hostID = property.hostID;
+
+            await _logic.UpdateProperty(dbProp);
+            return dbProp;
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProperty(string id)
+        public async Task<IActionResult> DeleteProperty(int id)
         {
             //var Property = await _dynamoDBContext.LoadAsync<Property>(id);
             var history = await _logic.GetPropertyById(id);

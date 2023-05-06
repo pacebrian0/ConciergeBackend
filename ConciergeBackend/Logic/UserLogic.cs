@@ -19,7 +19,7 @@ namespace ConciergeBackend.Logic
             return await _data.GetUsers();
 
         }
-        public async Task<User> GetUserById(string id)
+        public async Task<User> GetUserById(int id)
         {
             // no need for AWS logic
             return await _data.GetUserById(id);
@@ -30,12 +30,12 @@ namespace ConciergeBackend.Logic
             return await _data.GetUserByEmail(email);
         }
 
-        public async Task PostUser(User audit)
+        public async Task<int> PostUser(User audit)
         {
             //do AWS logic
 
             //do local logic
-            await _data.PostUser(audit, true);
+            return await _data.PostUser(audit, true);
         }
 
         public async Task UpdateUser(User audit)

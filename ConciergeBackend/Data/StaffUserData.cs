@@ -32,7 +32,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<StaffUser> GetStaffUserById(string id)
+        public async Task<StaffUser> GetStaffUserById(int id)
         {
             try
             {
@@ -76,9 +76,9 @@ namespace ConciergeBackend.Data
                             @surname ,
                             @propertyID,
                             @email ,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @createdBy ,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @modifiedBy ,
                             'A' );
 
@@ -111,7 +111,7 @@ namespace ConciergeBackend.Data
                                 `surname` = @surname,
                                 `propertyID` = @propertyID,
                                 `email` = @email,
-                                `modifiedOn` = now(),
+                                `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = @modifiedBy,
                                 `status` = @status
                             WHERE id = @id";

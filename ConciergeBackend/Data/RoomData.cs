@@ -32,7 +32,7 @@ namespace ConciergeBackend.Data
 
         }
 
-        public async Task<Room> GetRoomById(string id)
+        public async Task<Room> GetRoomById(int id)
         {
             try
             {
@@ -43,6 +43,29 @@ namespace ConciergeBackend.Data
                 using (var conn = new MySqlConnection(_localConn))
                 {
                     return await conn.QueryFirstOrDefaultAsync<Room>(sql, new { id });
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task<IEnumerable<Room>> GetRoomsByProperty(int id)
+        {
+            try
+            {
+                const string sql = @"SELECT *
+                                    FROM conciergedb.ROOM
+                                    WHERE propertyID=@id
+                                    AND status = 'A'
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryAsync<Room>(sql, new { id });
 
                 }
             }
@@ -72,9 +95,9 @@ namespace ConciergeBackend.Data
                             (
                             @name,
                             @propertyID,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @createdBy,
-                            now(),
+                            UTC_TIMESTAMP(),
                             @modifiedBy,
                             'A');
                             ";
@@ -104,7 +127,7 @@ namespace ConciergeBackend.Data
                             UPDATE `conciergedb`.`ROOM`
                             SET `name` = @name,
                                 `propertyID` = @propertyID,
-                                `modifiedOn` = now(),
+                                `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = @modifiedBy,
                                 `status` = @status
                             WHERE id = @id";

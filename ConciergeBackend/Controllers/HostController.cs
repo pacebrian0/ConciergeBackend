@@ -1,6 +1,6 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
-using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Host = ConciergeBackend.Models.Host;
 
@@ -10,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HostController : ControllerBase, IHostController
     {
         private readonly ILogger<HostController> _logger;
@@ -31,11 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Host> GetHostById(string id)
+        public async Task<Host> GetHostById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
-
             var history = await _logic.GetHostById(id);
             if (history == null)
             {
@@ -57,16 +55,13 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<Host> UpdateHost(string id, Host Host)
+        public async Task<Host> UpdateHost(int id, Host Host)
         {
             if (Host == null)
             {
                 throw new ArgumentNullException(nameof(Host));
             }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+
             if (Host.id != id)
             {
                 throw new ArgumentException($"The ID of the Host in the body '{Host.id}' does not match the ID '{id}' in the URL");
@@ -77,7 +72,7 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHost(string id)
+        public async Task<IActionResult> DeleteHost(int id)
         {
             //var Host = await _dynamoDBContext.LoadAsync<Host>(id);
             var history = await _logic.GetHostById(id);

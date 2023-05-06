@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Controllers.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace ConciergeBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StaffUserController : ControllerBase, IStaffUserController
     {
         private readonly ILogger<StaffUserController> _logger;
@@ -30,11 +32,8 @@ namespace ConciergeBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<StaffUser> GetStaffUserById(string id)
+        public async Task<StaffUser> GetStaffUserById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
-
             var history = await _logic.GetStaffUserById(id);
             if (history == null)
             {
@@ -56,15 +55,11 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<StaffUser> UpdateStaffUser(string id, StaffUser StaffUser)
+        public async Task<StaffUser> UpdateStaffUser(int id, StaffUser StaffUser)
         {
             if (StaffUser == null)
             {
                 throw new ArgumentNullException(nameof(StaffUser));
-            }
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
             }
             if (StaffUser.id != id)
             {
@@ -76,7 +71,7 @@ namespace ConciergeBackend.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStaffUser(string id)
+        public async Task<IActionResult> DeleteStaffUser(int id)
         {
             //var StaffUser = await _dynamoDBContext.LoadAsync<StaffUser>(id);
             var history = await _logic.GetStaffUserById(id);

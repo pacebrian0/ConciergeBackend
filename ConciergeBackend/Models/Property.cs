@@ -2,7 +2,7 @@
 {
     public class Property
     {
-        public string id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public string createdOn { get; set; }
         public string createdBy { get; set; }
@@ -10,6 +10,24 @@
         public string modifiedBy { get; set; }
         public string status { get; set; }
         public bool isActive { get; set; }
-        public string hostID { get; set; }
+        public int hostID { get; set; }
+    }
+
+    public class PropertyPost
+    {
+        public string name { get; set; }
+        public string createdBy { get; set; }
+        public string modifiedBy { get; set; }
+        public int hostID { get; set; }
+    }
+
+    public class PropertyPut
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string modifiedBy { get; set; }
+        public string status { get; set; }
+        public bool isActive { get; set; }
+        public int hostID { get; set; }
     }
 }
