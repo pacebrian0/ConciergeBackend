@@ -28,4 +28,4 @@ jobs:
           context: .
           file: ./ConciergeBackend/Dockerfile
           push: true
-          tags:  ${{secrets.CANISTERIO_USER}}/conciergeapi:latest
+          tags:  cloud.canister.io:5000/${{secrets.CANISTERIO_USER}}/conciergeapi:latest
