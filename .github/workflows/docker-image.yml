@@ -17,7 +17,7 @@ jobs:
     - name: docker login
       env:
         DOCKER_USER: ${{secrets.CANISTERIO_USER}}
-        DOCKER_PASSWORD: ${{secrets.CANISTERIO+PASSWORD}}
+        DOCKER_PASSWORD: ${{secrets.CANISTERIO_PASSWORD}}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD cloud.canister.io:5000
     - name: Set up Docker Buildx
