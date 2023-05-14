@@ -50,7 +50,6 @@ jobs:
           docker image list
           docker stop  ${{ secrets.CANISTERIO_USER }}/conciergeweb || true
           docker rm p ${{ secrets.CANISTERIO_USER }}/conciergeweb|| true
-          docker run -d --name conciergeweb -p 80:80  ${{ secrets.CANISTERIO_USER }}/conciergeweb:latest
       
       
 #       uses: docker/build-push-action@v3
