@@ -25,10 +25,30 @@ jobs:
       uses: docker/setup-buildx-action@v2
       
     - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-          context: .
-          file: ./ConciergeBackend/Dockerfile
-          push: true
-          registry: cloud.canister.io:5000
-          tags:  ${{secrets.CANISTERIO_USER}}/conciergeapi:latest
+      uses: opspresso/action-docker@master
+      # with:
+      env:
+        # username: ${{ secrets.DOCKER_USERNAME }}
+        USERNAME: ${{ secrets.CANISTERIO_USER }}
+        # password: ${{ secrets.DOCKER_PASSWORD }}
+        PASSWORD: ${{ secrets.CANISTERIO_PASSWORD }}
+        # registry: cloud.canister.io:5000
+        REGISTRY: cloud.canister.io:5000
+        # repository: ip2024/uz-server
+        IMAGE_NAME: ${{ secrets.CANISTERIO_USER }}/uzconciergeapiserver
+        # dockerfile: server/Dockerfile
+        DOCKERFILE: ./ConciergeBackend/Dockerfile
+        # tags: latest
+        LATEST: "true" 
+
+      
+      
+      
+      
+#       uses: docker/build-push-action@v3
+#       with:
+#           context: .
+#           file: ./ConciergeBackend/Dockerfile
+#           push: true
+#           registry: cloud.canister.io:5000
+#           tags:  ${{secrets.CANISTERIO_USER}}/conciergeapi:latest
