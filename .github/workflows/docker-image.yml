@@ -28,17 +28,11 @@ jobs:
       uses: opspresso/action-docker@master
       # with:
       env:
-        # username: ${{ secrets.DOCKER_USERNAME }}
         USERNAME: ${{ secrets.CANISTERIO_USER }}
-        # password: ${{ secrets.DOCKER_PASSWORD }}
         PASSWORD: ${{ secrets.CANISTERIO_PASSWORD }}
-        # registry: cloud.canister.io:5000
         REGISTRY: cloud.canister.io:5000
-        # repository: ip2024/uz-server
-        IMAGE_NAME: ${{ secrets.CANISTERIO_USER }}/uzconciergeapiserver
-        # dockerfile: server/Dockerfile
+        IMAGE_NAME: ${{ secrets.CANISTERIO_USER }}/conciergeapi
         DOCKERFILE: ./ConciergeBackend/Dockerfile
-        # tags: latest
         LATEST: "true" 
 
       
