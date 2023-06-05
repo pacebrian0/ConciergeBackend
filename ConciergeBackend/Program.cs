@@ -13,6 +13,8 @@ using NuGet.Packaging;
 using Swashbuckle.AspNetCore.Filters;
 using System.Drawing;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,8 +82,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
+
+}
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 
 app.UseAuthorization();

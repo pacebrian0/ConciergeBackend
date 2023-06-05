@@ -1,6 +1,7 @@
 ﻿using ConciergeBackend.Data.Interfaces;
 using ConciergeBackend.Logic.Interfaces;
 using ConciergeBackend.Models;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 
 namespace ConciergeBackend.Logic
 {
@@ -19,6 +20,18 @@ namespace ConciergeBackend.Logic
             return await _data.GetHistories();
 
         }
+
+        public async Task<History> GetHistoryByReservation(int resID)
+        {
+            return await _data.GetHistoryByReservation(resID);
+
+        }
+
+        public async Task<History> GetHistoryByRoom(int roomID)
+        {
+            return await _data.GetHistoryByRoom(roomID);
+        }
+
         public async Task<History> GetHistoryById(int id)
         {
             return await _data.GetHistoryById(id);

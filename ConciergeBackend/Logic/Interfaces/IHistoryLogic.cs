@@ -6,6 +6,8 @@ namespace ConciergeBackend.Logic.Interfaces
     {
         Task DeleteHistory(History audit);
         Task<History> GetHistoryById(int id);
+        Task<History> GetHistoryByReservation(int resID);
+        Task<History> GetHistoryByRoom(int roomID);
         Task<IEnumerable<History>> GetHistorys();
         Task PostHistory(History audit);
     }

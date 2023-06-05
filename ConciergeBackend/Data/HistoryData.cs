@@ -55,6 +55,49 @@ namespace ConciergeBackend.Data
 
         }
 
+        public async Task<History> GetHistoryByReservation(int resID)
+        {
+            try
+            {
+                const string sql = @"SELECT *
+                                    FROM conciergedb.HISTORY
+                                    WHERE reservationID=@resID
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryFirstOrDefaultAsync<History>(sql, new { resID });
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+        public async Task<History> GetHistoryByRoom(int roomID)
+        {
+            try
+            {
+                const string sql = @"SELECT *
+                                    FROM conciergedb.HISTORY
+                                    WHERE roomID=@roomID
+                                    ";
+                using (var conn = new MySqlConnection(_localConn))
+                {
+                    return await conn.QueryFirstOrDefaultAsync<History>(sql, new { roomID });
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+
         public async Task PostHistory(History history, bool local)
         {
             try

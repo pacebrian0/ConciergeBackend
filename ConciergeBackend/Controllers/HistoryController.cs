@@ -43,6 +43,30 @@ namespace ConciergeBackend.Controllers
             return history;
         }
 
+        [HttpGet("reservation/{id}")]
+        public async Task<History> GetHistoryByReservation(int id)
+        {
+
+            var history = await _logic.GetHistoryByReservation(id);
+            if (history == null)
+            {
+                throw new ArgumentException($"History with Reservation ID '{id}' not found");
+            }
+            return history;
+        }
+
+        [HttpGet("room/{id}")]
+        public async Task<History> GetHistoryByRoom(int roomID)
+        {
+
+            var history = await _logic.GetHistoryByReservation(roomID);
+            if (history == null)
+            {
+                throw new ArgumentException($"History with Room ID '{roomID}' not found");
+            }
+            return history;
+        }
+
         [HttpPost]
         public async Task<History> CreateHistory(HistoryPost history)
         {
