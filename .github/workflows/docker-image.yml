@@ -42,6 +42,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:  
+      - name: docker login
+        env:
+          DOCKER_USER: ${{secrets.CANISTERIO_USER}}
+          DOCKER_PASSWORD: ${{secrets.CANISTERIO_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD cloud.canister.io:5000
+        
       - name: Deploy Docker container to Ubuntu Server
         uses: appleboy/ssh-action@master
         with:
