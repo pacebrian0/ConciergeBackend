@@ -45,9 +45,11 @@ jobs:
         port: ${{ secrets.SERVER_SSH_PORT }}
         script: |
           docker login --username=${{ secrets.CANISTERIO_USER }} --password=${{ secrets.CANISTERIO_USER }} cloud.canister.io:5000
+          docker stop cloud.canister.io:5000/pacebrian0/conciergeweb || true
+          docker rm cloud.canister.io:5000/pacebrian0/conciergeweb || true
           docker pull cloud.canister.io:5000/pacebrian0/conciergeweb:latest
           cd concierge
-          docker compose up -d
+          docker run -d --name conciergebackend -e ASPNETCORE_URLS=http://+:5000 cloud.canister.io:5000/pacebrian0/conciergeweb:latest
       
       
 #       uses: docker/build-push-action@v3
