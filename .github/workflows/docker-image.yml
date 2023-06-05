@@ -1,0 +1,59 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.CANISTERIO_USER}}
+        DOCKER_PASSWORD: ${{secrets.CANISTERIO_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD cloud.canister.io:5000
+        
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Build and push
+      uses: opspresso/action-docker@master
+      # with:
+      env:
+        USERNAME: ${{ secrets.CANISTERIO_USER }}
+        PASSWORD: ${{ secrets.CANISTERIO_PASSWORD }}
+        REGISTRY: cloud.canister.io:5000
+        IMAGE_NAME: ${{ secrets.CANISTERIO_USER }}/conciergeapi
+        DOCKERFILE: ./ConciergeBackend/Dockerfile
+        LATEST: "true" 
+
+      
+    - name: Deploy Docker container to Ubuntu Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_KEY }}
+        port: ${{ secrets.SERVER_SSH_PORT }}
+        script: |
+          docker login --username=${{ secrets.CANISTERIO_USER }} --password=${{ secrets.CANISTERIO_USER }} cloud.canister.io:5000
+          docker pull cloud.canister.io:5000/pacebrian0/conciergeweb:latest
+          cd concierge
+          docker compose up -d
+      
+      
+#       uses: docker/build-push-action@v3
+#       with:
+#           context: .
+#           file: ./ConciergeBackend/Dockerfile
+#           push: true
+#           registry: cloud.canister.io:5000
+#           tags:  ${{secrets.CANISTERIO_USER}}/conciergeapi:latest
