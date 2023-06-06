@@ -21,7 +21,7 @@ jobs:
         files: '${{ github.workspace }}/ConciergeBackend/appsettings.json'
       env:
         ConnectionStrings.localConnString: ${{secrets.LOCAL_DB}}
-        App.Token: ${{secrets.API_TOKEN}}
+        AppSettings.Token: ${{secrets.API_TOKEN}}
     
           
     - name: docker login
