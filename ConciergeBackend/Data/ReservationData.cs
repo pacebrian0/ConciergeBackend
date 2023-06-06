@@ -174,7 +174,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            UPDATE `conciergedb`.`RESERVATION`
+                            UPDATE `conciergedb`.`Reservations`
                             SET `roomID` = @roomID,
                                 `userID` = @userID,
                                 `expiryDate` = @expiryDate,
@@ -203,7 +203,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            DELETE FROM `conciergedb`.`RESERVATION`
+                            DELETE FROM `conciergedb`.`Reservations`
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {

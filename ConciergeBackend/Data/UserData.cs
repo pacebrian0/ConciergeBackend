@@ -15,16 +15,16 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT `user`.`id`,
-                                        `user`.`name`,
-                                        `user`.`surname`,
-                                        `user`.`email`,
-                                        `user`.`createdOn`,
-                                        `user`.`createdBy`,
-                                        `user`.`modifiedOn`,
-                                        `user`.`modifiedBy`,
-                                        `user`.`password_hash` as passwordHash
-                                    FROM `conciergedb`.`user`
+                const string sql = @"SELECT `User`.`id`,
+                                        `User`.`name`,
+                                        `User`.`surname`,
+                                        `User`.`email`,
+                                        `User`.`createdOn`,
+                                        `User`.`createdBy`,
+                                        `User`.`modifiedOn`,
+                                        `User`.`modifiedBy`,
+                                        `User`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`User`
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -43,16 +43,16 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT `user`.`id`,
-                                        `user`.`name`,
-                                        `user`.`surname`,
-                                        `user`.`email`,
-                                        `user`.`createdOn`,
-                                        `user`.`createdBy`,
-                                        `user`.`modifiedOn`,
-                                        `user`.`modifiedBy`,
-                                        `user`.`password_hash` as passwordHash
-                                    FROM `conciergedb`.`user`
+                const string sql = @"SELECT `User`.`id`,
+                                        `User`.`name`,
+                                        `User`.`surname`,
+                                        `User`.`email`,
+                                        `User`.`createdOn`,
+                                        `User`.`createdBy`,
+                                        `User`.`modifiedOn`,
+                                        `User`.`modifiedBy`,
+                                        `User`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`User`
                                     WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
@@ -73,16 +73,16 @@ namespace ConciergeBackend.Data
         {
             try
             {
-                const string sql = @"SELECT `user`.`id`,
-                                        `user`.`name`,
-                                        `user`.`surname`,
-                                        `user`.`email`,
-                                        `user`.`createdOn`,
-                                        `user`.`createdBy`,
-                                        `user`.`modifiedOn`,
-                                        `user`.`modifiedBy`,
-                                        `user`.`password_hash` as passwordHash
-                                    FROM `conciergedb`.`user`
+                const string sql = @"SELECT `User`.`id`,
+                                        `User`.`name`,
+                                        `User`.`surname`,
+                                        `User`.`email`,
+                                        `User`.`createdOn`,
+                                        `User`.`createdBy`,
+                                        `User`.`modifiedOn`,
+                                        `User`.`modifiedBy`,
+                                        `User`.`password_hash` as passwordHash
+                                    FROM `conciergedb`.`User`
                                     WHERE email=@email
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
