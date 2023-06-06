@@ -15,12 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: edit connection string
-      uses: benday-inc/edit-dbconnstr-in-appsettings@main
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
       with:
-        pathtosettingsfile: '${{ github.workspace }}/ConciergeBackend/appsettings.json'
-        name: "localConnString"
-        connectionstring: "${{secrets.LOCAL_DB}}"
+        files: '${{ github.workspace }}/ConciergeBackend/appsettings.json'
+      env:
+        ConnectionStrings.localConnString: ${{secrets.LOCAL_DB}}
+        App.Token: ${{secrets.API_TOKEN}}
+    
           
     - name: docker login
       env:
