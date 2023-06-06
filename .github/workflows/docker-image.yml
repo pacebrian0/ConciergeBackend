@@ -68,7 +68,7 @@ jobs:
           script: |
             docker login -u ${{secrets.CANISTERIO_USER}} -p ${{secrets.CANISTERIO_PASSWORD}} cloud.canister.io:5000            
             docker ps | grep conciergeweb
-            docker stop cloud.canister.io:5000/pacebrian0/conciergeweb || true
+            docker stop cloud.canister.io:5000/pacebrian0/conciergeweb:latest || true
             docker rm cloud.canister.io:5000/pacebrian0/conciergeweb || true
             docker pull cloud.canister.io:5000/pacebrian0/conciergeweb
             cd concierge
