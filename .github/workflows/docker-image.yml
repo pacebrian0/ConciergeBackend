@@ -67,10 +67,8 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             docker login -u ${{secrets.CANISTERIO_USER}} -p ${{secrets.CANISTERIO_PASSWORD}} cloud.canister.io:5000            
-            container= docker ps | grep conciergeweb | cut -d " " -f 4
-            echo $container
-            docker stop $container  || true
-            docker rm $container || true
+            docker ps | grep conciergeweb | cut -d " " -f 4 | docker stop   || true
+            docker ps | grep conciergeweb | cut -d " " -f 4 | docker rm  || true
             docker pull cloud.canister.io:5000/pacebrian0/conciergeweb
             cd concierge
             docker run -d --name conciergebackend --network=concierge_network -e ASPNETCORE_URLS=http://+:5000  cloud.canister.io:5000/pacebrian0/conciergeweb:latest
