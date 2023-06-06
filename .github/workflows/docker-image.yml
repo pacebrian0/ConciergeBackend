@@ -67,6 +67,7 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             docker login -u ${{secrets.CANISTERIO_USER}} -p ${{secrets.CANISTERIO_PASSWORD}} cloud.canister.io:5000            
+            docker ps | grep conciergebackend
             docker ps | grep conciergeweb | cut -d " " -f 4 | docker stop   || true
             docker ps | grep conciergeweb | cut -d " " -f 4 | docker rm  || true
             docker pull cloud.canister.io:5000/pacebrian0/conciergeweb
