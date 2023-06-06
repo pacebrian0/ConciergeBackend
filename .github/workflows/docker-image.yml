@@ -71,7 +71,7 @@ jobs:
             docker login -u ${{secrets.CANISTERIO_USER}} -p ${{secrets.CANISTERIO_PASSWORD}} cloud.canister.io:5000            
             docker stop conciergebackend  || true
             docker rm  conciergebackend || true
-            docker pull cloud.canister.io:5000/pacebrian0/conciergeweb
+            docker pull cloud.canister.io:5000/pacebrian0/conciergeweb:latest
             cd concierge
             docker run -d --name conciergebackend --network=concierge_network --ip 10.5.0.7 -e ASPNETCORE_URLS=http://+:5000  cloud.canister.io:5000/pacebrian0/conciergeweb:latest
       
