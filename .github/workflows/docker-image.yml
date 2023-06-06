@@ -68,6 +68,7 @@ jobs:
           script: |
             docker login -u ${{secrets.CANISTERIO_USER}} -p ${{secrets.CANISTERIO_PASSWORD}} cloud.canister.io:5000            
             container= docker ps | grep conciergeweb | cut -d " " -f 1
+            echo $container
             docker stop $container  || true
             docker rm $container || true
             docker pull cloud.canister.io:5000/pacebrian0/conciergeweb
