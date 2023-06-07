@@ -59,7 +59,9 @@ namespace ConciergeBackend.Controllers
                 createdBy = property.createdBy,
                 modifiedBy = property.createdBy,
                 status = "A",
-                isActive = true
+                isActive = true,
+                hostID = property.hostID
+
             };
 
             await _logic.PostProperty(dbProp);

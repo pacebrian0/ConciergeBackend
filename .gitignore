@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /ConciergeHelper
 /docker-compose.yaml
 /Dockerfile
+/ConciergeBackend/appsettings.json
