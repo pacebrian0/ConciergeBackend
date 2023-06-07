@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /docker-compose.yaml
 /Dockerfile
 /ConciergeBackend/appsettings.json
+/ConciergeBackend/appsettings.Development.json
