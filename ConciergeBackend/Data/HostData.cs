@@ -61,7 +61,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            INSERT INTO conciergedb`.`Host`
+                            INSERT INTO `conciergedb`.`Host`
                             (
                             `name`,
                             `URL`)
