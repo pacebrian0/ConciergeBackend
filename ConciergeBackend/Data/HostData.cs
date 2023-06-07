@@ -61,7 +61,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            INSERT INTO `conciergedb`.`HOST`
+                            INSERT INTO conciergedb`.`Host`
                             (
                             `name`,
                             `URL`)
@@ -93,7 +93,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            UPDATE `conciergedb`.`HOST`
+                            UPDATE conciergedb`.`Host`
                             SET `name` = @name,
                                 `url` = @URL
                             WHERE id = @id";
@@ -117,7 +117,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            DELETE FROM `conciergedb`.`Host`
+                            DELETE FROM conciergedb`.`Host`
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
