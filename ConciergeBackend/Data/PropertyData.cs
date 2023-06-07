@@ -16,7 +16,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"SELECT *
-                                    FROM conciergedb.PROPERTY
+                                    FROM conciergedb.Property
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -37,7 +37,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"SELECT *
-                                    FROM conciergedb.PROPERTY
+                                    FROM conciergedb.Property
                                     WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
@@ -59,7 +59,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                           INSERT INTO `conciergedb`.`PROPERTY`
+                           INSERT INTO conciergedb`.`Property`
                             (
                             `name`,
                             `createdOn`,
@@ -102,7 +102,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            UPDATE `conciergedb`.`PROPERTY`
+                            UPDATE conciergedb`.`Property`
                             SET `name` = @name,
                                 `modifiedOn` = UTC_TIMESTAMP(),
                                 `modifiedBy` = @modifiedBy,
@@ -129,7 +129,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"
-                            DELETE FROM `conciergedb`.`PROPERTY`
+                            DELETE FROM conciergedb`.`Property`
                             WHERE id = @id";
                 using (var conn = new MySqlConnection(local ? _localConn : _remoteConn))
                 {
