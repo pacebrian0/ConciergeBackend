@@ -19,7 +19,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"SELECT *
-                                    FROM conciergedb.HOST
+                                    FROM conciergedb.Host
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
                 {
@@ -39,7 +39,7 @@ namespace ConciergeBackend.Data
             try
             {
                 const string sql = @"SELECT *
-                                    FROM conciergedb.HOST
+                                    FROM conciergedb.Host
                                     WHERE id=@id
                                     ";
                 using (var conn = new MySqlConnection(_localConn))
